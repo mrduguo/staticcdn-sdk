@@ -1,0 +1,9 @@
+target
+build
+.*
+*.iml
+*.ipr
+*.iws
+*.log
+tmp*
+gradle/localhost.properties
