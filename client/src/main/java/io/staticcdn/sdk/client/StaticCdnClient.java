@@ -182,7 +182,7 @@ public class StaticCdnClient {
                 optimiseResponse = apiCallOptimise(optimiseRequest, gson);
             }
             if (optimiseResponse.getCreatedAt() == null) {
-                throw new RuntimeException(optimiseResponse.getMessage());
+                throw new RuntimeException(optimiseResponse.getError());
             }
         }
         return optimiseResponse;

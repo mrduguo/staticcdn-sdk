@@ -11,7 +11,8 @@ public class OptimiseResponse {
     private String optimised;
 
     private List<String> missingKeys;
-    private String message;
+    private String error;
+    private List<String> warnings;
 
     public String getSignature() {
         return signature;
@@ -45,11 +46,19 @@ public class OptimiseResponse {
         this.missingKeys = missingKeys;
     }
 
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(List<String> warnings) {
+        this.warnings = warnings;
     }
 }
