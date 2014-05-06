@@ -1,17 +1,16 @@
 package io.staticcdn.sdk.client.model;
 
-import java.util.Date;
 import java.util.List;
 
 public class OptimiseResponse {
 
     private String signature;
-    private Date createdAt;
+    private String createdAt;
 
     private String optimised;
 
     private List<String> missingKeys;
-    private String error;
+    private String message;
     private List<String> warnings;
 
     public String getSignature() {
@@ -22,11 +21,11 @@ public class OptimiseResponse {
         this.signature = signature;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -46,12 +45,12 @@ public class OptimiseResponse {
         this.missingKeys = missingKeys;
     }
 
-    public String getError() {
-        return error;
+    public String getMessage() {
+        return message;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public List<String> getWarnings() {

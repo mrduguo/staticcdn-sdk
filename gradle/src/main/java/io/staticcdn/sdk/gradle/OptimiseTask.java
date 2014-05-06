@@ -58,7 +58,7 @@ public class OptimiseTask extends DefaultTask {
             throw new RuntimeException("no file found to optimise");
         }
 
-        StaticCdnClient staticCdnClient = new StaticCdnClient();
+        StaticCdnClient staticCdnClient = new StaticCdnClient(extension.getApiKey(),extension.getApiSecret());
         for (String filePath : inputFileRelativePaths) {
             staticCdnClient.optimise(
                     inputWwwRoots,

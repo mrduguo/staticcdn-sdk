@@ -69,6 +69,12 @@ public class StaticCdnPluginExtension {
      */
     private String optimisedFileNameRemoveString="-origin";
 
+
+
+    private String apiKey;
+
+    private String apiSecret;
+
     public List<String> getInputWwwRoots() {
         return inputWwwRoots;
     }
@@ -139,5 +145,21 @@ public class StaticCdnPluginExtension {
 
     public void setOptimisedFileNameRemoveString(String optimisedFileNameRemoveString) {
         this.optimisedFileNameRemoveString = optimisedFileNameRemoveString;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getApiSecret() {
+        return apiSecret;
+    }
+
+    public void setApiSecret(String apiSecret) {
+        this.apiSecret = apiSecret;
     }
 }

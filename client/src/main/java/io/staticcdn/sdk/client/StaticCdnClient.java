@@ -3,37 +3,51 @@ package io.staticcdn.sdk.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.staticcdn.sdk.client.model.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StaticCdnClient {
+
+    public static void main(String[] args) {
+        for (Object key : System.getProperties().keySet()) {
+            System.out.println(key + ":" + System.getProperty((String) key));
+        }
+    }
+
     private static Logger logger = Logger.getLogger(StaticCdnClient.class.getName());
 
     private HttpResponse lastResponse;
@@ -41,21 +55,17 @@ public class StaticCdnClient {
     private HttpClient httpClient;
     private ServerConfig serverConfig;
     private List<String> apiServerList;
+    private String clientUserAgent;
 
-    public StaticCdnClient() {
+    public StaticCdnClient(String apiKey, String apiSecret) {
         BasicHttpParams httpParams = new BasicHttpParams();
         httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, false);
-        httpClient = new DefaultHttpClient(httpParams);
-        this.apiServerList =new ArrayList<String>();
-        if(System.getProperty("staticCdnApiServerBaseUrl")!=null){
-            this.apiServerList.add(System.getProperty("staticCdnApiServerBaseUrl"));
-        }else{
-            this.apiServerList.add("https://api.staticcdn.io");
-            this.apiServerList.add("https://primary-api.staticcdn.io");
-            this.apiServerList.add("https://backup-api.staticcdn.io");
-        }
-        serverConfig = apiCallConfig();
-        this.apiServerList =serverConfig.getApiServerList();
+        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(httpParams);
+        httpClient = defaultHttpClient;
+
+        setupCredentials(apiKey, apiSecret, defaultHttpClient);
+        setupUserAgent();
+        setupServerConfig();
     }
 
     public OptimiseResponse optimise(
@@ -69,10 +79,10 @@ public class StaticCdnClient {
             String optimisedFileNameRemoveString
     ) throws Exception {
 
-        OptimiseRequest optimiseRequest = new OptimiseRequest();
-        optimiseRequest.setOptimiserOptions(optimiserOptions);
+
+        Map<String, File> path2fileMapping = new HashMap<String, File>();
+        OptimiseRequest optimiseRequest = new OptimiseRequestBuilder(path2fileMapping).options(optimiserOptions).collectFiles(serverConfig.getOptimiseScanRules(), inputWwwRoots, filePath).build();
         optimiseRequest.setRetrieveOptimisedAsText(retrieveOptimisedAsText);
-        collectSingleFile(inputWwwRoots, optimiseRequest, filePath, true);
         OptimiseResponse optimiseResponse = optimise(inputWwwRoots, optimiseRequest);
 
 
@@ -101,31 +111,35 @@ public class StaticCdnClient {
 
     private ServerConfig apiCallConfig() {
         for (String apiServerUrl : apiServerList) {
-            try{
-                executeRequest(new HttpGet(apiServerUrl+ "/v1/config"), true);
+            try {
+                executeRequest(new HttpGet(apiServerUrl + "/v1/config"), true);
                 Gson gson = new Gson();
                 return gson.fromJson(readTextBody(), ServerConfig.class);
-            }catch (Exception ex){
-                logger.log(Level.WARNING, "failed to retrieve server config from " + apiServerUrl +": "+ex.getMessage());
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, "failed to retrieve server config from " + apiServerUrl + ": " + ex.getMessage());
             }
         }
         throw new RuntimeException("failed to retrieve server config");
     }
 
     private OptimiseResponse apiCallOptimise(OptimiseRequest optimiseRequest, Gson gson) throws Exception {
-        Exception lastException=null;
+        Exception lastException = null;
         for (String apiServerUrl : apiServerList) {
-            try{
+            try {
                 HttpPost request = new HttpPost(apiServerUrl + "/v1/optimiser/optimise");
-                request.setEntity(new StringEntity(gson.toJson(optimiseRequest), ContentType.create("application/json", "UTF-8")));
+                String requestBody = gson.toJson(optimiseRequest);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("request body: " + requestBody);
+                }
+                request.setEntity(new StringEntity(requestBody, ContentType.create("application/json", "UTF-8")));
                 executeRequest(request, true);
                 return gson.fromJson(readTextBody(), OptimiseResponse.class);
-            }catch (Exception ex){
-                if(lastResponse!=null && lastResponse.getStatusLine().getStatusCode()<500){
+            } catch (Exception ex) {
+                if (lastResponse != null && lastResponse.getStatusLine().getStatusCode() < 500) {
                     throw ex;
                 }
-                logger.log(Level.WARNING, "failed to optimise with server " + apiServerUrl +": "+ex.getMessage());
-                lastException=ex;
+                logger.log(Level.WARNING, "failed to optimise with server " + apiServerUrl + ": " + ex.getMessage());
+                lastException = ex;
             }
         }
         throw lastException;
@@ -138,9 +152,9 @@ public class StaticCdnClient {
             key2pathMapping.put(pathAndKey.getValue(), pathAndKey.getKey());
         }
 
-        Exception lastException=null;
+        Exception lastException = null;
         for (String apiServerUrl : apiServerList) {
-            try{
+            try {
                 HttpPost request = new HttpPost(apiServerUrl + "/v1/files/upload");
                 MultipartEntity multipartEntity = new MultipartEntity();
                 List<String> missingPaths = new ArrayList<String>();
@@ -160,12 +174,12 @@ public class StaticCdnClient {
                 executeRequest(request, true);
                 logger.info("uploaded " + StringUtils.join(missingPaths, ','));
                 return gson.fromJson(readTextBody(), FilesInfoResponse.class);
-            }catch (Exception ex){
-                if(lastResponse!=null && lastResponse.getStatusLine().getStatusCode()<500){
+            } catch (Exception ex) {
+                if (lastResponse != null && lastResponse.getStatusLine().getStatusCode() < 500) {
                     throw ex;
                 }
-                logger.log(Level.WARNING, "failed upload to server " + apiServerUrl +": "+ex.getMessage());
-                lastException=ex;
+                logger.log(Level.WARNING, "failed upload to server " + apiServerUrl + ": " + ex.getMessage());
+                lastException = ex;
             }
         }
         throw lastException;
@@ -182,66 +196,10 @@ public class StaticCdnClient {
                 optimiseResponse = apiCallOptimise(optimiseRequest, gson);
             }
             if (optimiseResponse.getCreatedAt() == null) {
-                throw new RuntimeException(optimiseResponse.getError());
+                throw new RuntimeException(optimiseResponse.getMessage());
             }
         }
         return optimiseResponse;
-    }
-
-
-    private void collectSingleFile(List<File> inputWwwRoots, OptimiseRequest optimiseRequest, String filePath, boolean isConfiguredFile) throws Exception {
-        if (filePath.indexOf('?') > 0) {
-            filePath = filePath.substring(0, filePath.indexOf('?'));
-        }
-        if (filePath.indexOf('#') > 0) {
-            filePath = filePath.substring(0, filePath.indexOf('#'));
-        }
-        filePath = filePath.replaceAll("\\\\", "/");
-
-        if (optimiseRequest.getPaths().containsKey(filePath)) {
-            return;
-        }
-
-        for (File inputWwwRoot : inputWwwRoots) {
-            File inputFile = new File(inputWwwRoot, filePath);
-            if (inputFile.isFile()) {
-                String key = DigestUtils.md5Hex(new FileInputStream(inputFile)) + "." + FilenameUtils.getExtension(inputFile.getName());
-                optimiseRequest.addPath(filePath, key);
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("collected file " + filePath + " : " + key);
-                }
-
-                for (OptimiseScanRule optimiseScanRule : serverConfig.getOptimiseScanRules()) {
-                    if (Pattern.compile(optimiseScanRule.getExtensionPattern()).matcher(inputFile.getName()).find()) {
-                        String fileText = FileUtils.readFileToString(inputFile, "UTF-8");
-                        Matcher urlMatcher = Pattern.compile(optimiseScanRule.getUrlPattern()).matcher(fileText);
-                        while (urlMatcher.find()) {
-                            collectFoundUrl(inputWwwRoots, optimiseRequest, inputWwwRoot, inputFile, urlMatcher.group(optimiseScanRule.getUrlGroupIndex()));
-                        }
-                    }
-                }
-                return;
-            }
-        }
-        if (isConfiguredFile) {
-            throw new IllegalArgumentException("cannot find file: " + filePath);
-        } else {
-            logger.warning("file " + filePath + " not found for " + optimiseRequest.getPaths().keySet().iterator().next());
-        }
-    }
-
-    private void collectFoundUrl(List<File> inputWwwRoots, OptimiseRequest optimiseRequest, File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
-        if (!foundUrl.startsWith("data:") && foundUrl.indexOf("//") < 0) {
-            String embedPath;
-            if (foundUrl.charAt(0) == '/') {
-                embedPath = foundUrl;
-            } else {
-                File embedFile = new File(inputFile.getParentFile(), foundUrl);
-                embedPath = embedFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
-                embedPath = FilenameUtils.normalize(embedPath);
-            }
-            collectSingleFile(inputWwwRoots, optimiseRequest, embedPath, false);
-        }
     }
 
 
@@ -281,10 +239,19 @@ public class StaticCdnClient {
             lastResponse = null;
         }
         lastResponseTextBody = null;
+        URI uri = request.getURI();
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("executing request " + request.getMethod() + ": " + request.getURI());
+            logger.fine("executing request " + request.getMethod() + ": " + uri);
         }
-        lastResponse = httpClient.execute(request);
+
+        AuthCache authCache = new BasicAuthCache();
+        HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+        authCache.put(targetHost, new BasicScheme());
+        BasicHttpContext localContext = new BasicHttpContext();
+        localContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
+        request.setHeader(HttpHeaders.USER_AGENT, clientUserAgent);
+
+        lastResponse = httpClient.execute(targetHost, request, localContext);
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("executed request with response " + lastResponse.getStatusLine().getReasonPhrase() + " body: " + readTextBody());
         }
@@ -298,12 +265,65 @@ public class StaticCdnClient {
             } catch (Throwable ignore) {
             }
             if (errorMessage == null) {
-                errorMessage = request.getMethod() + " : " + request.getURI() + " failed with status code " + lastResponse.getStatusLine().getStatusCode();
+                errorMessage = request.getMethod() + " : " + uri + " failed with status code " + lastResponse.getStatusLine().getStatusCode();
             }
             throw new RuntimeException(errorMessage);
 
         }
         return lastResponse;
+    }
+
+    private void setupCredentials(String apiKey, String apiSecret, DefaultHttpClient defaultHttpClient) {
+        if (StringUtils.isEmpty(apiKey)) {
+            apiKey = System.getenv("STATIC_CDN_API_KEY");
+            if (StringUtils.isEmpty(apiKey)) {
+                apiKey = System.getProperty("staticCdnApiKey");
+                if (StringUtils.isEmpty(apiKey)) {
+                    apiKey = "anonymous";
+                }
+            }
+        }
+        if (StringUtils.isEmpty(apiSecret)) {
+            apiSecret = System.getenv("STATIC_CDN_API_SECRET");
+            if (StringUtils.isEmpty(apiSecret)) {
+                apiSecret = System.getProperty("staticCdnApiSecret");
+                if (StringUtils.isEmpty(apiSecret)) {
+                    apiSecret = "none";
+                }
+            }
+        }
+        defaultHttpClient.getCredentialsProvider().setCredentials(
+                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+                new UsernamePasswordCredentials(apiKey, apiSecret)
+        );
+    }
+
+
+    private void setupUserAgent() {
+        String clientVersion = "unknown";
+        try {
+            for (String line : IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("META-INF/maven/io.staticcdn.sdk/staticcdn-sdk-client/pom.properties"))) {
+                if (line.startsWith("version=")) {
+                    clientVersion = line.substring(line.indexOf("=") + 1);
+                }
+            }
+        } catch (Exception ex) {
+        }
+        clientUserAgent = "staticcdn-sdk-client " + clientVersion + " (" + System.getProperty("os.name") + " " + System.getProperty("os.version") + "/" + System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version") + ")";
+    }
+
+    private void setupServerConfig() {
+        this.apiServerList = new ArrayList<String>();
+        if (System.getProperty("staticCdnApiServerBaseUrl") != null) {
+            this.apiServerList.add(System.getProperty("staticCdnApiServerBaseUrl"));
+            serverConfig = apiCallConfig();
+        } else {
+            this.apiServerList.add("https://api.staticcdn.io");
+            this.apiServerList.add("https://primary-api.staticcdn.io");
+            this.apiServerList.add("https://backup-api.staticcdn.io");
+            serverConfig = apiCallConfig();
+            this.apiServerList = serverConfig.getApiServerList();
+        }
     }
 
     public HttpResponse getLastResponse() {

@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class OptimiseRequest {
 
+    @Deprecated
+    private String profile;
     private OptimiserOptions optimiserOptions;
     private boolean retrieveOptimisedAsText;
     private Map<String, String> paths = new LinkedHashMap<String, String>();
@@ -15,6 +17,13 @@ public class OptimiseRequest {
         paths.put(path, key);
     }
 
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 
     public OptimiserOptions getOptimiserOptions() {
         return optimiserOptions;

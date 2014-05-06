@@ -87,6 +87,12 @@ public class OptimiseMojo extends AbstractMojo {
     @Parameter(defaultValue = "-origin")
     private String optimisedFileNameRemoveString;
 
+    @Parameter
+    private String apiKey;
+
+    @Parameter
+    private String apiSecret;
+
     public void execute() throws MojoExecutionException {
         if (getLog().isDebugEnabled()) {
             Logger rootLogger = Logger.getAnonymousLogger().getParent();
@@ -133,7 +139,7 @@ public class OptimiseMojo extends AbstractMojo {
         }
 
 
-        StaticCdnClient staticCdnClient = new StaticCdnClient();
+        StaticCdnClient staticCdnClient = new StaticCdnClient(apiKey,apiSecret);
         for (String filePath : inputFileRelativePaths) {
             try {
                 staticCdnClient.optimise(
