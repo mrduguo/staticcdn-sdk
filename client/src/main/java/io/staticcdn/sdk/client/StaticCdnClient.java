@@ -57,6 +57,10 @@ public class StaticCdnClient {
     private List<String> apiServerList;
     private String clientUserAgent;
 
+    public StaticCdnClient() {
+        this(null,null);
+    }
+
     public StaticCdnClient(String apiKey, String apiSecret) {
         BasicHttpParams httpParams = new BasicHttpParams();
         httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, false);
@@ -78,7 +82,10 @@ public class StaticCdnClient {
             String optimisedFileNameSuffix,
             String optimisedFileNameRemoveString
     ) throws Exception {
-
+        if (outputWwwRoot == null) {
+            outputWwwRoot = inputWwwRoots.get(0);
+        }
+        backupExistingOutputFile(outputWwwRoot,filePath,optimisedFileNameRemoveString);
 
         Map<String, File> path2fileMapping = new HashMap<String, File>();
         OptimiseRequest optimiseRequest = new OptimiseRequestBuilder(path2fileMapping).options(optimiserOptions).collectFiles(serverConfig.getOptimiseScanRules(), inputWwwRoots, filePath).build();
@@ -86,9 +93,6 @@ public class StaticCdnClient {
         OptimiseResponse optimiseResponse = optimise(inputWwwRoots, optimiseRequest);
 
 
-        if (outputWwwRoot == null) {
-            outputWwwRoot = inputWwwRoots.get(0);
-        }
         writeOptimisedResultToFile(outputWwwRoot, filePath, optimiseResponse, optimisedFileNamePrefix, optimisedFileNameSuffix, optimisedFileNameRemoveString);
 
         return optimiseResponse;
@@ -214,12 +218,19 @@ public class StaticCdnClient {
         }
         File outputParentFile = new File(outputWwwRoot, filePath).getParentFile();
         File outputFile = new File(outputParentFile, fileBaseName + "." + fileExtension);
-        if (outputFile.exists()) {
-            File backupOriginFile = new File(outputFile.getParentFile(), fileBaseName + optimisedFileNameRemoveString + "." + fileExtension);
-            FileUtils.copyFile(outputFile, backupOriginFile);
-        }
         FileUtils.writeStringToFile(outputFile, optimiseResponse.getOptimised(), "UTF-8");
-        logger.info("optimised file as " + outputFile.getAbsolutePath());
+        logger.info("optimised session "+optimiseResponse.getSignature()+" as " + outputFile.getAbsolutePath());
+    }
+
+
+    private void backupExistingOutputFile(File outputWwwRoot, String filePath,String optimisedFileNameRemoveString) throws Exception {
+        File outputFile = new File(outputWwwRoot, filePath);
+        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNameRemoveString,""));
+        if (outputFile.exists()) {
+            File backupOriginFile = new File(outputFile.getAbsolutePath()+"_bak_"+System.currentTimeMillis());
+            outputFile.renameTo(backupOriginFile);
+            logger.warning("back up existing output file as:" + backupOriginFile.getAbsolutePath());
+        }
     }
 
 

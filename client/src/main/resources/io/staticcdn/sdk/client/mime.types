@@ -1065,7 +1065,7 @@ multipart/report
 multipart/signed
 multipart/voice-message				vpm
 text/calendar					ics ifb
-text/css					css
+text/css					css less
 text/csv					csv
 text/directory
 text/dns					soa zone
