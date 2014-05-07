@@ -3,6 +3,7 @@ package io.staticcdn.sdk.client.model;
 public class OptimiserOptions {
 
     private String profile;
+    private Boolean autoEmbedCss;
     private Integer autoDataUrlMaxFileSize;
     private Integer autoSpriteMinFileSize;
     private Integer autoSpriteMaxFileSize;
@@ -13,6 +14,14 @@ public class OptimiserOptions {
 
     public void setProfile(String profile) {
         this.profile = profile;
+    }
+
+    public Boolean getAutoEmbedCss() {
+        return autoEmbedCss;
+    }
+
+    public void setAutoEmbedCss(Boolean autoEmbedCss) {
+        this.autoEmbedCss = autoEmbedCss;
     }
 
     public Integer getAutoDataUrlMaxFileSize() {

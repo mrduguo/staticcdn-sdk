@@ -176,6 +176,7 @@ public class SiteDownloader {
                         if (resourceResponse.getFirstHeader(HttpHeaders.LOCATION) != null) {
                             url = resourceResponse.getFirstHeader(HttpHeaders.LOCATION).getValue();
                             urlToDownload = url;
+                            resourceResponse.getEntity().getContent().close();
                             log.fine("follow redirect to url " + url);
                         } else {
                             httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, true);
@@ -211,6 +212,7 @@ public class SiteDownloader {
                         markExpireTime(resourceResponse, downloadedFile);
                     }
                 } else {
+                    resourceResponse.getEntity().getContent().close();
                     String msg = "Failed to get url " + url + " with status code " + resourceResponse.getStatusLine().getStatusCode();
                     if (isRoot) {
                         throw new RuntimeException(msg);
