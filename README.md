@@ -18,7 +18,7 @@ mvn clean install
 ```sh
 
 cd /opt/staticcdn/src/staticcdn-sdk
-mvn  --batch-mode release:prepare release:perform
+mvn  --batch-mode release:prepare release:perform && mvn clean install
 
 
 ```
