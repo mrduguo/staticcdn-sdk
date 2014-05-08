@@ -3,7 +3,7 @@
 
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk</artifactId>
-    <version>0.0.19</version>
+    <version>0.0.20-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://www.staticcdn.io/</url>
 
