@@ -7,8 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -60,7 +59,7 @@ public class OptimiseRequestBuilder {
         for (File inputWwwRoot : inputWwwRoots) {
             File inputFile = new File(inputWwwRoot, filePath);
             if (inputFile.isFile()) {
-                String key = DigestUtils.md5Hex(new FileInputStream(inputFile)) + "." + FilenameUtils.getExtension(inputFile.getName());
+                String key = DigestUtils.md5Hex(checkForUtf8BOMAndDiscardIfAny(new FileInputStream(inputFile))) + "." + FilenameUtils.getExtension(inputFile.getName());
                 optimiseRequest.addPath(filePath, key);
                 path2fileMapping.put(filePath,inputFile);
                 if (logger.isLoggable(Level.FINE)) {
@@ -98,6 +97,17 @@ public class OptimiseRequestBuilder {
             }
             collectSingleFile( optimiseScanRules,inputWwwRoots, embedPath, false);
         }
+    }
+
+    public static InputStream checkForUtf8BOMAndDiscardIfAny(InputStream inputStream) throws IOException {
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(new BufferedInputStream(inputStream), 3);
+        byte[] bom = new byte[3];
+        if (pushbackInputStream.read(bom) != -1) {
+            if (!(bom[0] == (byte) 0xEF && bom[1] == (byte) 0xBB && bom[2] == (byte) 0xBF)) {
+                pushbackInputStream.unread(bom);
+            }
+        }
+        return pushbackInputStream;
     }
 
 }
