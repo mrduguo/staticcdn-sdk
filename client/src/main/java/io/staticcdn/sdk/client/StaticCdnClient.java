@@ -216,21 +216,26 @@ public class StaticCdnClient {
         if (optimisedFileNameSuffix != null) {
             fileExtension = fileExtension + optimisedFileNameSuffix;
         }
-        File outputParentFile = new File(outputWwwRoot, filePath).getParentFile();
-        File outputFile = new File(outputParentFile, fileBaseName + "." + fileExtension);
+        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNameRemoveString);
         FileUtils.writeStringToFile(outputFile, optimiseResponse.getOptimised(), "UTF-8");
         logger.info("optimised session "+optimiseResponse.getSignature()+" as " + outputFile.getAbsolutePath());
     }
 
 
     private void backupExistingOutputFile(File outputWwwRoot, String filePath,String optimisedFileNameRemoveString) throws Exception {
-        File outputFile = new File(outputWwwRoot, filePath);
-        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNameRemoveString,""));
+        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNameRemoveString);
         if (outputFile.exists()) {
             File backupOriginFile = new File(outputFile.getAbsolutePath()+"_bak_"+System.currentTimeMillis());
             outputFile.renameTo(backupOriginFile);
             logger.warning("back up existing output file as:" + backupOriginFile.getAbsolutePath());
         }
+    }
+
+
+    private File buildOutputFile(File outputWwwRoot, String filePath,String optimisedFileNameRemoveString) throws Exception {
+        File outputFile = new File(outputWwwRoot, filePath);
+        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNameRemoveString,""));
+        return outputFile;
     }
 
 
