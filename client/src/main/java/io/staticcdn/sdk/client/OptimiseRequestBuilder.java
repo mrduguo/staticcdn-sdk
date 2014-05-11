@@ -87,6 +87,12 @@ public class OptimiseRequestBuilder {
 
     private void collectFoundUrl(List<OptimiseScanRule> optimiseScanRules,List<File> inputWwwRoots,  File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
         if (!foundUrl.startsWith("data:") && foundUrl.indexOf("//") < 0) {
+            if(foundUrl.indexOf("?")>0){
+                foundUrl=foundUrl.substring(0,foundUrl.indexOf("?"));
+            }
+            if(foundUrl.indexOf("#")>0){
+                foundUrl=foundUrl.substring(0,foundUrl.indexOf("#"));
+            }
             String embedPath;
             if (foundUrl.charAt(0) == '/') {
                 embedPath = foundUrl;

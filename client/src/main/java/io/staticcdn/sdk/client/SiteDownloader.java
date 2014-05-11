@@ -71,7 +71,7 @@ public class SiteDownloader {
         return path;
     }
 
-    void collectEmbedFiles(String selectedPath, String selectedUrl) throws Exception {
+    private void collectEmbedFiles(String selectedPath, String selectedUrl) throws Exception {
         if (urlToFileMapping.size() > 500) {
             throw new RuntimeException("exceed max 500 files referenced on a page");
         }
@@ -97,7 +97,7 @@ public class SiteDownloader {
         }
     }
 
-    public void handleFoundUrlMatcher(String selectedUrl, File inputFile, String foundUrl, StringBuffer localisedReplacedContent, Matcher urlMatcher) {
+    private void handleFoundUrlMatcher(String selectedUrl, File inputFile, String foundUrl, StringBuffer localisedReplacedContent, Matcher urlMatcher) {
         String newContent = null;
         if (foundUrl.indexOf("?#") > 0) {
             foundUrl = foundUrl.substring(0, foundUrl.indexOf("?#"));
@@ -116,7 +116,7 @@ public class SiteDownloader {
         urlMatcher.appendReplacement(localisedReplacedContent, urlMatcher.quoteReplacement(newContent));
     }
 
-    String collectUrl(File hostFile, String hostUrl, String foundUrl) throws Exception {
+    private String collectUrl(File hostFile, String hostUrl, String foundUrl) throws Exception {
         if (foundUrl.startsWith("data:")) {
             return null;
         }
@@ -150,7 +150,7 @@ public class SiteDownloader {
         return collectedPath;
     }
 
-    String downloadUrl(String url, boolean isRoot) throws Exception {
+    private String downloadUrl(String url, boolean isRoot) throws Exception {
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "#" + urlToFileMapping.size() + " downloading " + url);
         }
@@ -254,7 +254,7 @@ public class SiteDownloader {
         }
     }
 
-    String convertUrlToLocalFilePath(String url) {
+    private String convertUrlToLocalFilePath(String url) {
         String baseUrl = retrieveBaseUrl(url);
         String localPath=url.substring(baseUrl.length()-1);
         if (localPath.endsWith("/")) {
@@ -267,7 +267,7 @@ public class SiteDownloader {
         return localPath;
     }
 
-    public void markExpireTime(HttpResponse resourceResponse, File downloadedFile) throws Exception {
+    private void markExpireTime(HttpResponse resourceResponse, File downloadedFile) throws Exception {
         Header cacheControl = resourceResponse.getFirstHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl != null) {
             Matcher maxAgeMatcher = CACHE_CONTROL_MAX_AGE_PATTERN.matcher(cacheControl.getValue());
