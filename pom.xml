@@ -62,5 +62,11 @@
             </plugins>
         </pluginManagement>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>artifact-releases</id>
+            <url>${distBaseUrl}/artifact-releases</url>
+        </repository>
+    </distributionManagement>
 
 </project>
