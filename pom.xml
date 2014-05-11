@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk</artifactId>
-    <version>0.0.20</version>
+    <version>0.0.21-SNAPSHOT</version>
     <name>Static CDN SDK</name>
     <description>
         Software Development Kits to work with staticcdn.io.
