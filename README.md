@@ -47,12 +47,14 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.0.20-SNAPSHOT'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.0'
     }
 }
 apply plugin: 'groovy'
 apply plugin: 'staticcdn'
 staticcdn {
+    apiKey='***'
+    apiSecret='***'
     inputWwwRoots=['../']
     outputWwwRoot='build/wwwroot'
     inputFilePathPatterns=[
@@ -75,6 +77,6 @@ cd /opt/staticcdn/src/staticcdn-sdk
 mvn clean install
 
 cd /opt/staticcdn/src/staticcdn-sdk
-mvn  --batch-mode release:prepare release:perform && mvn clean install
+mvn release:clean && mvn release:prepare && mvn release:perform
 
 ```
