@@ -29,18 +29,18 @@ INLINE OPTIONS
 
 #### options list
 
-name  | description
-------------:|:---------------
- sio-data-url=enabled  |  embed image as data url
- sio-data-url=disabled  |  disable image as data url even it meet autoDataUrlMaxFileSize
+    name                    | description
+---------------------------:|:---------------
+ sio-data-url=enabled       |  embed image as data url
+ sio-data-url=disabled      |  disable image as data url even it meet autoDataUrlMaxFileSize
  sio-img-optimise=disabled  | disable image optimization (doesn't apply to individual sprite image)
- sio-img-optimise=enabled  | enable image optimization
- sio-auto-sprite=disabled  | disable the image sprite even it meet sprite requirement
- sio-auto-sprite=enabled  | enable sprite even it doesn't meet sprite requirement
- sio-auto-sprite-name  |  all sprite image in a given css file will generated as 'default', you can give different name to generate multiple sprites
- sio-css-embed=enabled  | embed css to html page
- sio-js-embed=enabled  | embed js to html page
- sio-js-async=enabled  | add async flag to script tag on html page
+ sio-img-optimise=enabled   | enable image optimization
+ sio-auto-sprite=disabled   | disable the image sprite even it meet sprite requirement
+ sio-auto-sprite=enabled    | enable sprite even it doesn't meet sprite requirement
+ sio-auto-sprite-name       |  all sprite image in a given css file will generated as 'default', you can give different name to generate multiple sprites
+ sio-css-embed=enabled      | embed css to html page
+ sio-js-embed=enabled       | embed js to html page
+ sio-js-async=enabled       | add async flag to script tag on html page
 
 
 
