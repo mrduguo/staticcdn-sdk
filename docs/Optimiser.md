@@ -1,6 +1,29 @@
 Static CDN Optimiser
 ====================
 
+GLOBAL OPTIONS
+--------------
+
+name  | description
+------------:|:---------------
+ profile  |  values: safe (default) | relaxed
+ autoEmbedCss  |  values: false (default) , true
+ autoDataUrlMaxFileSize  | values: null (default) , any positive numbers
+ autoSpriteMinFileSize  | values: null (default) , any positive numbers
+ autoSpriteMaxFileSize  | values: null (default) , any positive numbers
+
+
+The global options can be passed via maven/gradle plugin or comments in first text file with json format. Sample global optimiser options:
+```json
+staticcdn-optimiser-options=
+{
+    "autoSpriteMinFileSize":1,
+    "autoSpriteMaxFileSize":10000
+}
+```
+
+
+
 INLINE OPTIONS
 --------------
 
