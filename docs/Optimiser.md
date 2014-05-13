@@ -1,8 +1,6 @@
 Static CDN Optimiser
 ====================
 
-:with_toc_data
-
 INLINE OPTIONS
 --------------
 
