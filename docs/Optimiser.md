@@ -1,10 +1,17 @@
 Static CDN Optimiser
 ====================
 
+:with_toc_data
+
+* auto-gen TOC:
+{:toc}
+
 INLINE OPTIONS
 --------------
+{:toc}
 
 #### options list
+{:toc}
 
 name  | description
 ------------:|:---------------
@@ -44,6 +51,7 @@ To add async flag to the script tag:
 #### sprite requirement
 
 Image will only be part of sprite if meet following requirements in the same class definition:
+
 1. has background-image
 1. has width
 1. has height
