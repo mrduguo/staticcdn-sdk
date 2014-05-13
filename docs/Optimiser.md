@@ -3,15 +3,10 @@ Static CDN Optimiser
 
 :with_toc_data
 
-* auto-gen TOC:
-{:toc}
-
 INLINE OPTIONS
 --------------
-{:toc}
 
 #### options list
-{:toc}
 
 name  | description
 ------------:|:---------------
