@@ -16,7 +16,7 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.2</version>
     <executions>
         <execution>
             <goals>
@@ -47,7 +47,7 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.0'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.2'
     }
 }
 apply plugin: 'groovy'
@@ -80,3 +80,7 @@ cd /opt/staticcdn/src/staticcdn-sdk
 mvn release:clean && mvn release:prepare && mvn release:perform
 
 ```
+
+SOSSR
+https://oss.sonatype.org/content/groups/public
+https://oss.sonatype.org/content/groups/staging
