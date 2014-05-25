@@ -1,5 +1,9 @@
 import org.apache.commons.io.FileUtils
 
+if(project.version.indexOf('SNAPSHOT')<0){
+    println('skip test during release')
+    return
+}
 def outputFolder=new File(project.basedir,"target")
 def zipFile=new File(project.basedir,"target/$project.artifactId-${project.version}.zip")
 exec("unzip $zipFile.absolutePath",outputFolder)
