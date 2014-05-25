@@ -39,6 +39,7 @@
         <module>client</module>
         <module>maven</module>
         <module>gradle</module>
+        <module>standalone</module>
     </modules>
 
     <build>

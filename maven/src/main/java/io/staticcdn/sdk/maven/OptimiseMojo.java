@@ -69,23 +69,12 @@ public class OptimiseMojo extends AbstractMojo {
     @Parameter(defaultValue = "true")
     private boolean retrieveOptimisedAsText;
 
-    /**
-     * add a prefix for the out put file based on original root file name
-     */
-    @Parameter
-    private String optimisedFileNamePrefix;
-
-    /**
-     * append suffix for the out put file based on original root file name
-     */
-    @Parameter
-    private String optimisedFileNameSuffix;
 
     /**
      * the string will be removed from the new output file based on original root file name
      */
-    @Parameter(defaultValue = "-origin")
-    private String optimisedFileNameRemoveString;
+    @Parameter(defaultValue = "origin-")
+    private String optimisedFileNamePrefix;
 
     @Parameter
     private String apiKey;
@@ -148,9 +137,7 @@ public class OptimiseMojo extends AbstractMojo {
                         filePath,
                         optimiserOptions,
                         retrieveOptimisedAsText,
-                        optimisedFileNamePrefix,
-                        optimisedFileNameSuffix,
-                        optimisedFileNameRemoveString
+                        optimisedFileNamePrefix
                 );
             } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);

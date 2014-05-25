@@ -4,6 +4,7 @@ package io.staticcdn.sdk.gradle;
 import io.staticcdn.sdk.client.StaticCdnClient;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -21,13 +22,13 @@ public class OptimiseTask extends DefaultTask {
             throw new RuntimeException("inputWwwRoots is required");
         } else {
             for (String path : extension.getInputWwwRoots()) {
-                inputWwwRoots.add(new File(path));
+                inputWwwRoots.add(new File(getProject().getProjectDir(), path));
             }
         }
 
         File outputWwwRoot = null;
         if (extension.getOutputWwwRoot() != null) {
-            outputWwwRoot = new File(extension.getOutputWwwRoot());
+            outputWwwRoot = new File(getProject().getProjectDir(),extension.getOutputWwwRoot());
         }
 
         List<String> inputFileRelativePaths = extension.getInputFileRelativePaths();
@@ -46,7 +47,11 @@ public class OptimiseTask extends DefaultTask {
                         relativePath = relativePath.replaceAll("\\\\", "/");
                         for (String filePathPattern : extension.getInputFilePathPatterns()) {
                             if (relativePath.matches(filePathPattern) && !inputFileRelativePaths.contains(relativePath)) {
-                                inputFileRelativePaths.add(relativePath);
+                                File originFile=new File(foundFile.getParentFile(),extension.getOptimisedFileNamePrefix()+foundFile.getName());
+                                if(!originFile.exists()){
+                                    getLogger().debug("found file: "+foundFile.getAbsolutePath());
+                                    inputFileRelativePaths.add(relativePath);
+                                }
                             }
                         }
                     }
@@ -66,9 +71,7 @@ public class OptimiseTask extends DefaultTask {
                     filePath,
                     extension.getOptimiserOptions(),
                     extension.isRetrieveOptimisedAsText(),
-                    extension.getOptimisedFileNamePrefix(),
-                    extension.getOptimisedFileNameSuffix(),
-                    extension.getOptimisedFileNameRemoveString()
+                    extension.getOptimisedFileNamePrefix()
             );
         }
     }

@@ -78,14 +78,12 @@ public class StaticCdnClient {
             String filePath,
             OptimiserOptions optimiserOptions,
             boolean retrieveOptimisedAsText,
-            String optimisedFileNamePrefix,
-            String optimisedFileNameSuffix,
-            String optimisedFileNameRemoveString
+            String optimisedFileNamePrefix
     ) throws Exception {
         if (outputWwwRoot == null) {
             outputWwwRoot = inputWwwRoots.get(0);
         }
-        backupExistingOutputFile(outputWwwRoot,filePath,optimisedFileNameRemoveString);
+        backupExistingInputFile(inputWwwRoots, outputWwwRoot, filePath, optimisedFileNamePrefix);
 
         Map<String, File> path2fileMapping = new HashMap<String, File>();
         OptimiseRequest optimiseRequest = new OptimiseRequestBuilder(path2fileMapping).options(optimiserOptions).collectFiles(serverConfig.getOptimiseScanRules(), inputWwwRoots, filePath).build();
@@ -93,7 +91,7 @@ public class StaticCdnClient {
         OptimiseResponse optimiseResponse = optimise(inputWwwRoots, optimiseRequest);
 
 
-        writeOptimisedResultToFile(outputWwwRoot, filePath, optimiseResponse, optimisedFileNamePrefix, optimisedFileNameSuffix, optimisedFileNameRemoveString);
+        writeOptimisedResultToFile(outputWwwRoot, filePath, optimiseResponse,optimisedFileNamePrefix);
 
         return optimiseResponse;
     }
@@ -207,34 +205,34 @@ public class StaticCdnClient {
     }
 
 
-    private void writeOptimisedResultToFile(File outputWwwRoot, String filePath, OptimiseResponse optimiseResponse, String optimisedFileNamePrefix, String optimisedFileNameSuffix, String optimisedFileNameRemoveString) throws Exception {
+    private void writeOptimisedResultToFile(File outputWwwRoot, String filePath, OptimiseResponse optimiseResponse,  String optimisedFileNamePrefix) throws Exception {
         String fileExtension = FilenameUtils.getExtension(filePath);
         String fileBaseName = FilenameUtils.getBaseName(filePath);
-        if (optimisedFileNamePrefix != null) {
-            fileBaseName = optimisedFileNamePrefix + fileBaseName;
-        }
-        if (optimisedFileNameSuffix != null) {
-            fileExtension = fileExtension + optimisedFileNameSuffix;
-        }
-        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNameRemoveString);
+        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNamePrefix);
         FileUtils.writeStringToFile(outputFile, optimiseResponse.getOptimised(), "UTF-8");
         logger.info("optimised session "+optimiseResponse.getSignature()+" as " + outputFile.getAbsolutePath());
     }
 
 
-    private void backupExistingOutputFile(File outputWwwRoot, String filePath,String optimisedFileNameRemoveString) throws Exception {
-        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNameRemoveString);
-        if (outputFile.exists()) {
-            File backupOriginFile = new File(outputFile.getAbsolutePath()+"_bak_"+System.currentTimeMillis());
-            outputFile.renameTo(backupOriginFile);
-            logger.warning("back up existing output file as:" + backupOriginFile.getAbsolutePath());
+    private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String optimisedFileNamePrefix) throws Exception {
+        for (File inputWwwRoot : inputWwwRoots) {
+            File inputFile=new File(inputWwwRoot,filePath);
+            if(inputFile.exists()){
+                File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNamePrefix);
+                File backupOriginFile = new File(outputFile.getParentFile(),optimisedFileNamePrefix+outputFile.getName());
+                if (!backupOriginFile.exists()) {
+                    FileUtils.copyFile(inputFile, backupOriginFile);
+                    logger.fine("back up existing output file as:" + backupOriginFile.getAbsolutePath());
+                }
+                return;
+            }
         }
     }
 
 
-    private File buildOutputFile(File outputWwwRoot, String filePath,String optimisedFileNameRemoveString) throws Exception {
+    private File buildOutputFile(File outputWwwRoot, String filePath,String optimisedFileNamePrefix) throws Exception {
         File outputFile = new File(outputWwwRoot, filePath);
-        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNameRemoveString,""));
+        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNamePrefix,""));
         return outputFile;
     }
 

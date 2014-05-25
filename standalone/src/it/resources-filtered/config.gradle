@@ -1,0 +1,24 @@
+defaultTasks 'clean', 'build'
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:${project.version}'
+    }
+}
+apply plugin: 'groovy'
+apply plugin: 'staticcdn'
+
+
+staticcdn {
+    inputWwwRoots=['../']
+    inputFilePathPatterns=[
+        '^.*html$',
+    ]
+    optimiserOptions=[
+        autoEmbedCss:true,
+        autoDataUrlMaxFileSize:1000
+    ]
+}

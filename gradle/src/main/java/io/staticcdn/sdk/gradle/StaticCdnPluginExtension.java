@@ -55,19 +55,9 @@ public class StaticCdnPluginExtension {
     private boolean retrieveOptimisedAsText=true;
 
     /**
-     * add a prefix for the out put file based on original root file name
-     */
-    private String optimisedFileNamePrefix;
-
-    /**
-     * append suffix for the out put file based on original root file name
-     */
-    private String optimisedFileNameSuffix;
-
-    /**
      * the string will be removed from the new output file based on original root file name
      */
-    private String optimisedFileNameRemoveString="-origin";
+    private String optimisedFileNamePrefix="origin-";
 
 
 
@@ -129,22 +119,6 @@ public class StaticCdnPluginExtension {
 
     public void setOptimisedFileNamePrefix(String optimisedFileNamePrefix) {
         this.optimisedFileNamePrefix = optimisedFileNamePrefix;
-    }
-
-    public String getOptimisedFileNameSuffix() {
-        return optimisedFileNameSuffix;
-    }
-
-    public void setOptimisedFileNameSuffix(String optimisedFileNameSuffix) {
-        this.optimisedFileNameSuffix = optimisedFileNameSuffix;
-    }
-
-    public String getOptimisedFileNameRemoveString() {
-        return optimisedFileNameRemoveString;
-    }
-
-    public void setOptimisedFileNameRemoveString(String optimisedFileNameRemoveString) {
-        this.optimisedFileNameRemoveString = optimisedFileNameRemoveString;
     }
 
     public String getApiKey() {
