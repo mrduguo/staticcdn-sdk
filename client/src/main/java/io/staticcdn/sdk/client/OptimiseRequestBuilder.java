@@ -44,6 +44,9 @@ public class OptimiseRequestBuilder {
 
 
     private void collectSingleFile(List<OptimiseScanRule> optimiseScanRules,List<File> inputWwwRoots, String filePath, boolean isConfiguredFile) throws Exception {
+        if (filePath==null) {
+            return;
+        }
         if (filePath.indexOf('?') > 0) {
             filePath = filePath.substring(0, filePath.indexOf('?'));
         }
