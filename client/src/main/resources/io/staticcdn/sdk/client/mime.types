@@ -115,7 +115,7 @@ application/news-transmission
 application/nss
 application/ocsp-request			orq
 application/ocsp-response			ors
-application/octet-stream		bin lha lzh exe class so dll img iso ttf
+application/octet-stream		bin lha lzh exe class so dll img iso ttf cur
 application/oda					oda
 application/oebps-package+xml			opf
 application/ogg					ogx
@@ -1018,6 +1018,7 @@ image/vnd.sealedmedia.softseal.jpg		sjpg sjp s1j
 image/vnd.svf
 image/vnd.wap.wbmp				wbmp
 image/vnd.xiff					xif
+image/webp					webp
 message/CPIM
 message/delivery-status
 message/disposition-notification
