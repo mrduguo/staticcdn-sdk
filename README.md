@@ -55,11 +55,10 @@ apply plugin: 'staticcdn'
 staticcdn {
     apiKey='***'
     apiSecret='***'
-    inputWwwRoots=['../']
-    outputWwwRoot='build/wwwroot'
+    inputWwwRoots=['wwwroot/']
+    outputWwwRoot='build/optimized-wwwroot'
     inputFilePathPatterns=[
-            '^\\/index.html$',
-            '^((?!build).)*index.html$',
+            '^.*html$',
     ]
     optimiserOptions=new io.staticcdn.sdk.client.model.OptimiserOptions(
             autoEmbedCss:true,

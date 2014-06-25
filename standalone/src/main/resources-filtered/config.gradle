@@ -10,14 +10,23 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'staticcdn'
 
-
 staticcdn {
-    inputWwwRoots=['../']
-    inputFilePathPatterns=[
-        '^.*html$',
+    inputWwwRoots = ['wwwroot/']
+    outputWwwRoot = 'build/optimized-files/'
+    inputFilePathPatterns = [
+            '^.*html$',
     ]
-    optimiserOptions=[
-        autoEmbedCss:true,
-        autoDataUrlMaxFileSize:1000
+    optimiserOptions = [
+            autoEmbedCss          : true,
+            autoDataUrlMaxFileSize: 1000
     ]
 }
+
+task prepareWwwroot(type: Copy, dependsOn: 'staticcdnOptimise') {
+    from 'wwwroot/'
+    from 'build/optimized-files/'
+    exclude '**/original-*'
+    into { 'build/optimized-wwwroot/' }
+}
+tasks.build.dependsOn prepareWwwroot
+
