@@ -45,12 +45,22 @@ dependencies {
 }
 task uploadSiteToServer() {
     doLast {
-        def serverPassword = System.console().readPassword("\nPlease enter ftp server password: ").toString()
+        def serverPassword
+        if(System.env.FTP_SERVER_PASSWORD){
+            serverPassword = "$System.env.FTP_SERVER_PASSWORD"
+        }else{
+            serverPassword = System.console().readPassword("\nPlease enter ftp server password: ")
+        }
         ant {
             taskdef(name: 'ftp',
                     classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
-                    classpath: configurations.ftpAntTask.asPath)
-            ftp(server: "your-ftp-server-host.com", port: 21, remotedir: '/your/www/root', userid: "your-user-id", password: serverPassword) {
+                    classpath: configurations.ftpAntTask.asPath)    
+            ftp(    server: "your-ftp-server-host.com",
+                    port: 21,
+                    remotedir: '/your/www/root',
+                    userid: "your-user-id",
+                    password: serverPassword.toString()
+            ) {
                 fileset(dir: "build/optimized-wwwroot/")
             }
         }
