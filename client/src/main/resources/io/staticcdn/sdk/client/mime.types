@@ -1076,7 +1076,7 @@ text/html					html htm
 # obsoleted by application/javascript
 text/javascript					js
 text/parityfec
-text/plain				asc txt text pm el c h cc hh cxx hxx f90 inc php
+text/plain				asc txt text pm el c h cc hh cxx hxx f90 inc php jsp
 text/prs.fallenstein.rst			rst
 text/prs.lines.tag				tag dsc
 text/RED
