@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-samples-jsp-maven</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -37,18 +37,18 @@
             <plugin>
                 <groupId>io.staticcdn.sdk</groupId>
                 <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-                <version>0.1.5</version>
+                <version>0.1.6</version>
                 <executions>
                     <execution>
-                        <id>optimise-static-resource</id>
+                        <id>optimize-static-resource</id>
                         <goals>
-                            <goal>optimise</goal>
+                            <goal>optimize</goal>
                         </goals>
                         <configuration>
-                        <!--
-                            <apiKey>***</apiKey>
-                            <apiSecret>***</apiSecret>
-                        -->
+                            <!--
+                                <apiKey>***</apiKey>
+                                <apiSecret>***</apiSecret>
+                            -->
                             <inputWwwRoots>
                                 <inputWwwRoot>${basedir}/src/main/webapp</inputWwwRoot>
                             </inputWwwRoots>

@@ -1,8 +1,8 @@
 package io.staticcdn.sdk.client;
 
-import io.staticcdn.sdk.client.model.OptimiseRequest;
-import io.staticcdn.sdk.client.model.OptimiseScanRule;
-import io.staticcdn.sdk.client.model.OptimiserOptions;
+import io.staticcdn.sdk.client.model.OptimizeRequest;
+import io.staticcdn.sdk.client.model.OptimizeScanRule;
+import io.staticcdn.sdk.client.model.OptimizerOptions;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -15,36 +15,37 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OptimiseRequestBuilder {
-    private static Logger logger = Logger.getLogger(OptimiseRequestBuilder.class.getName());
-    OptimiseRequest optimiseRequest = new OptimiseRequest();
-    Map<String,File> path2fileMapping;
-    public OptimiseRequestBuilder(Map<String,File> path2fileMapping) {
-        this.path2fileMapping=path2fileMapping;
+public class OptimizeRequestBuilder {
+    private static Logger logger = Logger.getLogger(OptimizeRequestBuilder.class.getName());
+    OptimizeRequest optimizeRequest = new OptimizeRequest();
+    Map<String, File> path2fileMapping;
+
+    public OptimizeRequestBuilder(Map<String, File> path2fileMapping) {
+        this.path2fileMapping = path2fileMapping;
     }
 
-    public OptimiseRequest build(){
-        return optimiseRequest;
+    public OptimizeRequest build() {
+        return optimizeRequest;
     }
 
-    public OptimiseRequestBuilder options(OptimiserOptions optimiserOptions) {
-        optimiseRequest.setOptimiserOptions(optimiserOptions);
+    public OptimizeRequestBuilder options(OptimizerOptions optimizerOptions) {
+        optimizeRequest.setOptimizerOptions(optimizerOptions);
         return this;
     }
 
-    public OptimiseRequestBuilder paths(Map<String,String> paths) {
-        optimiseRequest.setPaths(paths);
+    public OptimizeRequestBuilder paths(Map<String, String> paths) {
+        optimizeRequest.setPaths(paths);
         return this;
     }
 
-    public OptimiseRequestBuilder collectFiles(List<OptimiseScanRule> optimiseScanRules,List<File> inputWwwRoots, String filePath )  throws Exception {
-        collectSingleFile(optimiseScanRules, inputWwwRoots, filePath, true);
+    public OptimizeRequestBuilder collectFiles(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath) throws Exception {
+        collectSingleFile(optimizeScanRules, inputWwwRoots, filePath, true);
         return this;
     }
 
 
-    private void collectSingleFile(List<OptimiseScanRule> optimiseScanRules,List<File> inputWwwRoots, String filePath, boolean isConfiguredFile) throws Exception {
-        if (filePath==null) {
+    private void collectSingleFile(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath, boolean isConfiguredFile) throws Exception {
+        if (filePath == null) {
             return;
         }
         if (filePath.indexOf('?') > 0) {
@@ -55,7 +56,7 @@ public class OptimiseRequestBuilder {
         }
         filePath = filePath.replaceAll("\\\\", "/");
 
-        if (optimiseRequest.getPaths().containsKey(filePath)) {
+        if (optimizeRequest.getPaths().containsKey(filePath)) {
             return;
         }
 
@@ -63,18 +64,18 @@ public class OptimiseRequestBuilder {
             File inputFile = new File(inputWwwRoot, filePath);
             if (inputFile.isFile()) {
                 String key = DigestUtils.md5Hex(checkForUtf8BOMAndDiscardIfAny(new FileInputStream(inputFile))) + "." + FilenameUtils.getExtension(inputFile.getName());
-                optimiseRequest.addPath(filePath, key);
-                path2fileMapping.put(filePath,inputFile);
+                optimizeRequest.addPath(filePath, key);
+                path2fileMapping.put(filePath, inputFile);
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("collected file " + filePath + " : " + key);
                 }
 
-                for (OptimiseScanRule optimiseScanRule :  optimiseScanRules) {
-                    if (Pattern.compile(optimiseScanRule.getExtensionPattern()).matcher(inputFile.getName()).find()) {
+                for (OptimizeScanRule optimizeScanRule : optimizeScanRules) {
+                    if (Pattern.compile(optimizeScanRule.getExtensionPattern()).matcher(inputFile.getName()).find()) {
                         String fileText = FileUtils.readFileToString(inputFile, "UTF-8");
-                        Matcher urlMatcher = Pattern.compile(optimiseScanRule.getUrlPattern()).matcher(fileText);
+                        Matcher urlMatcher = Pattern.compile(optimizeScanRule.getUrlPattern()).matcher(fileText);
                         while (urlMatcher.find()) {
-                            collectFoundUrl( optimiseScanRules,inputWwwRoots, inputWwwRoot, inputFile, urlMatcher.group(optimiseScanRule.getUrlGroupIndex()));
+                            collectFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, urlMatcher.group(optimizeScanRule.getUrlGroupIndex()));
                         }
                     }
                 }
@@ -84,17 +85,17 @@ public class OptimiseRequestBuilder {
         if (isConfiguredFile) {
             throw new IllegalArgumentException("cannot find file: " + filePath);
         } else {
-            logger.warning("file " + filePath + " not found for " + optimiseRequest.getPaths().keySet().iterator().next());
+            logger.warning("file " + filePath + " not found for " + optimizeRequest.getPaths().keySet().iterator().next());
         }
     }
 
-    private void collectFoundUrl(List<OptimiseScanRule> optimiseScanRules,List<File> inputWwwRoots,  File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
+    private void collectFoundUrl(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
         if (!foundUrl.startsWith("data:") && foundUrl.indexOf("//") < 0) {
-            if(foundUrl.indexOf("?")>0){
-                foundUrl=foundUrl.substring(0,foundUrl.indexOf("?"));
+            if (foundUrl.indexOf("?") > 0) {
+                foundUrl = foundUrl.substring(0, foundUrl.indexOf("?"));
             }
-            if(foundUrl.indexOf("#")>0){
-                foundUrl=foundUrl.substring(0,foundUrl.indexOf("#"));
+            if (foundUrl.indexOf("#") > 0) {
+                foundUrl = foundUrl.substring(0, foundUrl.indexOf("#"));
             }
             String embedPath;
             if (foundUrl.charAt(0) == '/') {
@@ -104,7 +105,7 @@ public class OptimiseRequestBuilder {
                 embedPath = embedFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
                 embedPath = FilenameUtils.normalize(embedPath);
             }
-            collectSingleFile( optimiseScanRules,inputWwwRoots, embedPath, false);
+            collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath, false);
         }
     }
 

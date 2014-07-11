@@ -1,6 +1,6 @@
 package io.staticcdn.sdk.client.model;
 
-public class OptimiseScanRule {
+public class OptimizeScanRule {
     private String extensionPattern;
     private String urlPattern;
     private int urlGroupIndex;

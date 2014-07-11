@@ -4,12 +4,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OptimiseRequest {
+public class OptimizeRequest {
 
     @Deprecated
-    private String profile;
-    private OptimiserOptions optimiserOptions;
+    private OptimizerOptions optimiserOptions;
+    @Deprecated
     private boolean retrieveOptimisedAsText;
+
+    private OptimizerOptions optimizerOptions;
     private Map<String, String> paths = new LinkedHashMap<String, String>();
     private List<String> aggregations;
 
@@ -17,19 +19,21 @@ public class OptimiseRequest {
         paths.put(path, key);
     }
 
-    public String getProfile() {
-        return profile;
+    public OptimizerOptions getOptimizerOptions() {
+        if(optimizerOptions==null)
+            return optimiserOptions;
+        return optimizerOptions;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setOptimizerOptions(OptimizerOptions optimizerOptions) {
+        this.optimizerOptions = optimizerOptions;
     }
 
-    public OptimiserOptions getOptimiserOptions() {
+    public OptimizerOptions getOptimiserOptions() {
         return optimiserOptions;
     }
 
-    public void setOptimiserOptions(OptimiserOptions optimiserOptions) {
+    public void setOptimiserOptions(OptimizerOptions optimiserOptions) {
         this.optimiserOptions = optimiserOptions;
     }
 

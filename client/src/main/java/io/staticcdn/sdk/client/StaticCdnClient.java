@@ -58,7 +58,7 @@ public class StaticCdnClient {
     private String clientUserAgent;
 
     public StaticCdnClient() {
-        this(null,null);
+        this(null, null);
     }
 
     public StaticCdnClient(String apiKey, String apiSecret) {
@@ -72,43 +72,41 @@ public class StaticCdnClient {
         setupServerConfig();
     }
 
-    public OptimiseResponse optimise(
+    public OptimizeResponse optimize(
             List<File> inputWwwRoots,
             File outputWwwRoot,
             String filePath,
-            OptimiserOptions optimiserOptions,
-            boolean retrieveOptimisedAsText,
-            String optimisedFileNamePrefix
+            OptimizerOptions optimizerOptions,
+            String optimizedFileNamePrefix
     ) throws Exception {
         if (outputWwwRoot == null) {
             outputWwwRoot = inputWwwRoots.get(0);
         }
-        backupExistingInputFile(inputWwwRoots, outputWwwRoot, filePath, optimisedFileNamePrefix);
+        backupExistingInputFile(inputWwwRoots, outputWwwRoot, filePath, optimizedFileNamePrefix);
 
         Map<String, File> path2fileMapping = new HashMap<String, File>();
-        OptimiseRequest optimiseRequest = new OptimiseRequestBuilder(path2fileMapping).options(optimiserOptions).collectFiles(serverConfig.getOptimiseScanRules(), inputWwwRoots, filePath).build();
-        optimiseRequest.setRetrieveOptimisedAsText(retrieveOptimisedAsText);
-        OptimiseResponse optimiseResponse = optimise(inputWwwRoots, optimiseRequest);
+        OptimizeRequest optimizeRequest = new OptimizeRequestBuilder(path2fileMapping).options(optimizerOptions).collectFiles(serverConfig.getOptimizeScanRules(), inputWwwRoots, filePath).build();
+        OptimizeResponse optimizeResponse = optimize(inputWwwRoots, optimizeRequest);
 
 
-        writeOptimisedResultToFile(outputWwwRoot, filePath, optimiseResponse,optimisedFileNamePrefix);
+        writeOptimizedResultToFile(outputWwwRoot, filePath, optimizeResponse, optimizedFileNamePrefix);
 
-        return optimiseResponse;
+        return optimizeResponse;
     }
 
-    public OptimiseResponse optimise(List<File> inputWwwRoots, OptimiseRequest optimiseRequest) throws Exception {
+    public OptimizeResponse optimize(List<File> inputWwwRoots, OptimizeRequest optimizeRequest) throws Exception {
         long startTimestamp = System.currentTimeMillis();
-        OptimiseResponse optimiseResponse;
+        OptimizeResponse optimizeResponse;
         try {
-            optimiseResponse = performOptimise(inputWwwRoots, optimiseRequest);
+            optimizeResponse = performOptimize(inputWwwRoots, optimizeRequest);
         } catch (Throwable ex) {
             if (ex.getMessage() == null || ex instanceof JsonSyntaxException) {
                 logger.severe("last response was " + lastResponse.getStatusLine().getReasonPhrase() + " body: " + readTextBody());
             }
-            throw new Exception("Failed to optimise files: " + ex.getMessage(), ex);
+            throw new Exception("Failed to optimize files: " + ex.getMessage(), ex);
         }
-        logger.info("optimised " + optimiseRequest.getPaths().keySet().iterator().next() + " in " + ((System.currentTimeMillis() - startTimestamp) / 1000.0) + " seconds");
-        return optimiseResponse;
+        logger.info("optimized " + optimizeRequest.getPaths().keySet().iterator().next() + " in " + ((System.currentTimeMillis() - startTimestamp) / 1000.0) + " seconds");
+        return optimizeResponse;
     }
 
     private ServerConfig apiCallConfig() {
@@ -124,23 +122,23 @@ public class StaticCdnClient {
         throw new RuntimeException("failed to retrieve server config");
     }
 
-    private OptimiseResponse apiCallOptimise(OptimiseRequest optimiseRequest, Gson gson) throws Exception {
+    private OptimizeResponse apiCallOptimize(OptimizeRequest optimizeRequest, Gson gson) throws Exception {
         Exception lastException = null;
         for (String apiServerUrl : apiServerList) {
             try {
-                HttpPost request = new HttpPost(apiServerUrl + "/v1/optimiser/optimise");
-                String requestBody = gson.toJson(optimiseRequest);
+                HttpPost request = new HttpPost(apiServerUrl + "/v1/optimizer/optimize");
+                String requestBody = gson.toJson(optimizeRequest);
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("request body: " + requestBody);
                 }
                 request.setEntity(new StringEntity(requestBody, ContentType.create("application/json", "UTF-8")));
                 executeRequest(request, true);
-                return gson.fromJson(readTextBody(), OptimiseResponse.class);
+                return gson.fromJson(readTextBody(), OptimizeResponse.class);
             } catch (Exception ex) {
                 if (lastResponse != null && lastResponse.getStatusLine().getStatusCode() < 500) {
                     throw ex;
                 }
-                logger.log(Level.WARNING, "failed to optimise with server " + apiServerUrl + ": " + ex.getMessage());
+                logger.log(Level.WARNING, "failed to optimize with server " + apiServerUrl + ": " + ex.getMessage());
                 lastException = ex;
             }
         }
@@ -189,38 +187,43 @@ public class StaticCdnClient {
     }
 
 
-    private OptimiseResponse performOptimise(List<File> inputWwwRoots, OptimiseRequest optimiseRequest) throws Exception {
+    private OptimizeResponse performOptimize(List<File> inputWwwRoots, OptimizeRequest optimizeRequest) throws Exception {
         Gson gson = new Gson();
-        OptimiseResponse optimiseResponse = apiCallOptimise(optimiseRequest, gson);
-        if (optimiseResponse.getCreatedAt() == null) {
-            if (optimiseResponse.getMissingKeys() != null) {
-                apiCallUpload(inputWwwRoots, optimiseRequest.getPaths(), optimiseResponse.getMissingKeys(), gson);
-                optimiseResponse = apiCallOptimise(optimiseRequest, gson);
+        OptimizeResponse optimizeResponse = apiCallOptimize(optimizeRequest, gson);
+        if (optimizeResponse.getCreatedAt() == null) {
+            if (optimizeResponse.getMissingKeys() != null) {
+                apiCallUpload(inputWwwRoots, optimizeRequest.getPaths(), optimizeResponse.getMissingKeys(), gson);
+                optimizeResponse = apiCallOptimize(optimizeRequest, gson);
             }
-            if (optimiseResponse.getCreatedAt() == null) {
-                throw new RuntimeException(optimiseResponse.getMessage());
+            if (optimizeResponse.getCreatedAt() == null) {
+                throw new RuntimeException(optimizeResponse.getMessage());
             }
         }
-        return optimiseResponse;
+        return optimizeResponse;
     }
 
 
-    private void writeOptimisedResultToFile(File outputWwwRoot, String filePath, OptimiseResponse optimiseResponse,  String optimisedFileNamePrefix) throws Exception {
+    private void writeOptimizedResultToFile(File outputWwwRoot, String filePath, OptimizeResponse optimizeResponse, String optimizedFileNamePrefix) throws Exception {
         String fileExtension = FilenameUtils.getExtension(filePath);
         String fileBaseName = FilenameUtils.getBaseName(filePath);
-        File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNamePrefix);
-        FileUtils.writeStringToFile(outputFile, optimiseResponse.getOptimised(), "UTF-8");
-        logger.info("optimised session "+optimiseResponse.getSignature()+" as " + outputFile.getAbsolutePath());
+        File outputFile = buildOutputFile(outputWwwRoot, filePath, optimizedFileNamePrefix);
+        FileUtils.writeStringToFile(outputFile, optimizeResponse.getOptimized(), "UTF-8");
+        if (optimizeResponse.getReferences() != null) {
+            for (String referenceKey : optimizeResponse.getReferences().keySet()) {
+                System.setProperty("sio-optimized-" + referenceKey, optimizeResponse.getReferences().get(referenceKey));
+            }
+        }
+        logger.info("optimized session " + optimizeResponse.getSignature() + " as " + outputFile.getAbsolutePath());
     }
 
 
-    private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String optimisedFileNamePrefix) throws Exception {
+    private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String optimizedFileNamePrefix) throws Exception {
         for (File inputWwwRoot : inputWwwRoots) {
-            File inputFile=new File(inputWwwRoot,filePath);
-            if(inputFile.exists()){
-                File outputFile = buildOutputFile(outputWwwRoot, filePath,optimisedFileNamePrefix);
-                File backupOriginFile = new File(outputFile.getParentFile(),optimisedFileNamePrefix+outputFile.getName());
-                if (!backupOriginFile.exists()) {
+            File inputFile = new File(inputWwwRoot, filePath);
+            if (inputFile.exists()) {
+                File outputFile = buildOutputFile(outputWwwRoot, filePath, optimizedFileNamePrefix);
+                File backupOriginFile = new File(outputFile.getParentFile(), optimizedFileNamePrefix + outputFile.getName());
+                if (!backupOriginFile.exists() && !optimizedFileNamePrefix.equals("skip")) {
                     FileUtils.copyFile(inputFile, backupOriginFile);
                     logger.fine("back up existing output file as:" + backupOriginFile.getAbsolutePath());
                 }
@@ -230,9 +233,9 @@ public class StaticCdnClient {
     }
 
 
-    private File buildOutputFile(File outputWwwRoot, String filePath,String optimisedFileNamePrefix) throws Exception {
+    private File buildOutputFile(File outputWwwRoot, String filePath, String optimizedFileNamePrefix) throws Exception {
         File outputFile = new File(outputWwwRoot, filePath);
-        outputFile=new File(outputFile.getParentFile(),outputFile.getName().replaceAll(optimisedFileNamePrefix,""));
+        outputFile = new File(outputFile.getParentFile(), outputFile.getName().replaceAll(optimizedFileNamePrefix, ""));
         return outputFile;
     }
 

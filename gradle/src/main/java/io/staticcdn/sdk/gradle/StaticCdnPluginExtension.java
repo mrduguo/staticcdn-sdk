@@ -1,7 +1,6 @@
-
 package io.staticcdn.sdk.gradle;
 
-import io.staticcdn.sdk.client.model.OptimiserOptions;
+import io.staticcdn.sdk.client.model.OptimizerOptions;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  * Gradle DSL Extension for 'Spring Boot'.  Most of the time Spring Boot can guess the
  * settings in this extension, but occasionally you might need to explicitly set one
  * or two of them. E.g.
- * 
+ * <p/>
  * <pre>
  *     apply plugin: "spring-boot"
  *     springBoot {
@@ -35,7 +34,7 @@ public class StaticCdnPluginExtension {
     private String outputWwwRoot;
 
     /**
-     * the file relative to www root path list to be optimised
+     * the file relative to www root path list to be optimized
      */
     private List<String> inputFileRelativePaths;
 
@@ -45,20 +44,16 @@ public class StaticCdnPluginExtension {
     private List<String> inputFilePathPatterns;
 
     /**
-     * Optimise optimiserOptions
+     * Optimize optimizerOptions
      */
-    private OptimiserOptions optimiserOptions;
+    private OptimizerOptions optimizerOptions;
 
     /**
-     * get back optimised file as text, by default will detect by file type
+     * the string will be removed from the new output file based on original root file name, set to skip to not backup the original file
      */
-    private boolean retrieveOptimisedAsText=true;
+    private String optimizedFileNamePrefix = "origin-";
 
-    /**
-     * the string will be removed from the new output file based on original root file name
-     */
-    private String optimisedFileNamePrefix="origin-";
-
+    private boolean skipOptimize = false;
 
 
     private String apiKey;
@@ -97,28 +92,20 @@ public class StaticCdnPluginExtension {
         this.inputFilePathPatterns = inputFilePathPatterns;
     }
 
-    public OptimiserOptions getOptimiserOptions() {
-        return optimiserOptions;
+    public OptimizerOptions getOptimizerOptions() {
+        return optimizerOptions;
     }
 
-    public void setOptimiserOptions(OptimiserOptions optimiserOptions) {
-        this.optimiserOptions = optimiserOptions;
+    public void setOptimizerOptions(OptimizerOptions optimizerOptions) {
+        this.optimizerOptions = optimizerOptions;
     }
 
-    public boolean isRetrieveOptimisedAsText() {
-        return retrieveOptimisedAsText;
+    public String getOptimizedFileNamePrefix() {
+        return optimizedFileNamePrefix;
     }
 
-    public void setRetrieveOptimisedAsText(boolean retrieveOptimisedAsText) {
-        this.retrieveOptimisedAsText = retrieveOptimisedAsText;
-    }
-
-    public String getOptimisedFileNamePrefix() {
-        return optimisedFileNamePrefix;
-    }
-
-    public void setOptimisedFileNamePrefix(String optimisedFileNamePrefix) {
-        this.optimisedFileNamePrefix = optimisedFileNamePrefix;
+    public void setOptimizedFileNamePrefix(String optimizedFileNamePrefix) {
+        this.optimizedFileNamePrefix = optimizedFileNamePrefix;
     }
 
     public String getApiKey() {
@@ -135,5 +122,13 @@ public class StaticCdnPluginExtension {
 
     public void setApiSecret(String apiSecret) {
         this.apiSecret = apiSecret;
+    }
+
+    public boolean isSkipOptimize() {
+        return skipOptimize;
+    }
+
+    public void setSkipOptimize(boolean skipOptimize) {
+        this.skipOptimize = skipOptimize;
     }
 }

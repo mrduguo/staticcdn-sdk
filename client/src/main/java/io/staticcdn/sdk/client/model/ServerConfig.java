@@ -4,9 +4,11 @@ import java.util.List;
 
 public class ServerConfig {
 
+    @Deprecated
+    private List<OptimizeScanRule> optimiseScanRules;
     private String version;
     private List<String> apiServerList;
-    private List<OptimiseScanRule> optimiseScanRules;
+    private List<OptimizeScanRule> optimizeScanRules;
 
     public String getVersion() {
         return version;
@@ -24,11 +26,21 @@ public class ServerConfig {
         this.apiServerList = apiServerList;
     }
 
-    public List<OptimiseScanRule> getOptimiseScanRules() {
+    public List<OptimizeScanRule> getOptimizeScanRules() {
+        if(optimizeScanRules==null)
+            return optimiseScanRules;
+        return optimizeScanRules;
+    }
+
+    public void setOptimizeScanRules(List<OptimizeScanRule> optimizeScanRules) {
+        this.optimizeScanRules = optimizeScanRules;
+    }
+
+    public List<OptimizeScanRule> getOptimiseScanRules() {
         return optimiseScanRules;
     }
 
-    public void setOptimiseScanRules(List<OptimiseScanRule> optimiseScanRules) {
+    public void setOptimiseScanRules(List<OptimizeScanRule> optimiseScanRules) {
         this.optimiseScanRules = optimiseScanRules;
     }
 }

@@ -1,2 +1,2 @@
-var SIO=SIO||{};
-SIO.onPageLoaded=[];
+var SIO = SIO || {};
+SIO.onPageLoaded = [];

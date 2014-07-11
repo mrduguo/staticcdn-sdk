@@ -7,7 +7,7 @@ import static org.testng.Assert.assertNull;
 
 public class MimeTypeResolverTest {
 
-    MimeTypeResolver mimeTypeResolver=new MimeTypeResolver();
+    MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
 
     @Test
     public void testBasicFileTypes() throws Exception {

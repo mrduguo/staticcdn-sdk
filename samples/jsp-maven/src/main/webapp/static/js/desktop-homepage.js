@@ -1,3 +1,3 @@
-SIO.onPageLoaded.push(function(){
+SIO.onPageLoaded.push(function () {
     $('.js-show').show();
 });

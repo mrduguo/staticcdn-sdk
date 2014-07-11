@@ -1,21 +1,23 @@
-
 package io.staticcdn.sdk.gradle;
 
 import io.staticcdn.sdk.client.StaticCdnClient;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptimiseTask extends DefaultTask {
+public class OptimizeTask extends DefaultTask {
 
     @TaskAction
-    public void optimise() throws Exception {
+    public void optimize() throws Exception {
         StaticCdnPluginExtension extension = getProject().getExtensions().getByType(StaticCdnPluginExtension.class);
+        if (extension.isSkipOptimize() || System.getProperty("skipOptimize")!=null) {
+            getLogger().warn("optimize skipped");
+            return;
+        }
 
         List<File> inputWwwRoots = new ArrayList<File>();
         if (extension.getInputWwwRoots() == null) {
@@ -28,7 +30,7 @@ public class OptimiseTask extends DefaultTask {
 
         File outputWwwRoot = null;
         if (extension.getOutputWwwRoot() != null) {
-            outputWwwRoot = new File(getProject().getProjectDir(),extension.getOutputWwwRoot());
+            outputWwwRoot = new File(getProject().getProjectDir(), extension.getOutputWwwRoot());
         }
 
         List<String> inputFileRelativePaths = extension.getInputFileRelativePaths();
@@ -47,9 +49,9 @@ public class OptimiseTask extends DefaultTask {
                         relativePath = relativePath.replaceAll("\\\\", "/");
                         for (String filePathPattern : extension.getInputFilePathPatterns()) {
                             if (relativePath.matches(filePathPattern) && !inputFileRelativePaths.contains(relativePath)) {
-                                File originFile=new File(foundFile.getParentFile(),extension.getOptimisedFileNamePrefix()+foundFile.getName());
-                                if(!originFile.exists()){
-                                    getLogger().debug("found file: "+foundFile.getAbsolutePath());
+                                File originFile = new File(foundFile.getParentFile(), extension.getOptimizedFileNamePrefix() + foundFile.getName());
+                                if (!originFile.exists()) {
+                                    getLogger().debug("found file: " + foundFile.getAbsolutePath());
                                     inputFileRelativePaths.add(relativePath);
                                 }
                             }
@@ -59,19 +61,18 @@ public class OptimiseTask extends DefaultTask {
             }
         }
 
-        if(inputFileRelativePaths.size()==0){
-            throw new RuntimeException("no file found to optimise");
+        if (inputFileRelativePaths.size() == 0) {
+            throw new RuntimeException("no file found to optimize");
         }
 
-        StaticCdnClient staticCdnClient = new StaticCdnClient(extension.getApiKey(),extension.getApiSecret());
+        StaticCdnClient staticCdnClient = new StaticCdnClient(extension.getApiKey(), extension.getApiSecret());
         for (String filePath : inputFileRelativePaths) {
-            staticCdnClient.optimise(
+            staticCdnClient.optimize(
                     inputWwwRoots,
                     outputWwwRoot,
                     filePath,
-                    extension.getOptimiserOptions(),
-                    extension.isRetrieveOptimisedAsText(),
-                    extension.getOptimisedFileNamePrefix()
+                    extension.getOptimizerOptions(),
+                    extension.getOptimizedFileNamePrefix()
             );
         }
     }

@@ -1,6 +1,6 @@
 package io.staticcdn.sdk.client.model;
 
-public class OptimiserOptions {
+public class OptimizerOptions {
 
     private String profile;
     private Boolean autoEmbedCss;

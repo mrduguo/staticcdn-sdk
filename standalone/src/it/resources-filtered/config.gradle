@@ -13,12 +13,13 @@ apply plugin: 'staticcdn'
 
 
 staticcdn {
-    inputWwwRoots=['../']
-    inputFilePathPatterns=[
-        '^.*html$',
+    inputWwwRoots = ['../']
+    inputFilePathPatterns = [
+            '^.*html$',
+            '^.*inc$',
     ]
-    optimiserOptions=[
-        autoEmbedCss:true,
-        autoDataUrlMaxFileSize:1000
+    optimizerOptions = [
+            autoEmbedCss          : true,
+            autoDataUrlMaxFileSize: 1000
     ]
 }

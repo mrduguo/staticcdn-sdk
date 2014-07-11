@@ -1,17 +1,19 @@
 package io.staticcdn.sdk.client.model;
 
 import java.util.List;
+import java.util.Map;
 
-public class OptimiseResponse {
+public class OptimizeResponse {
 
     private String signature;
     private String createdAt;
 
-    private String optimised;
+    private String optimized;
 
     private List<String> missingKeys;
     private String message;
     private List<String> warnings;
+    private Map<String, String> references;
 
     public String getSignature() {
         return signature;
@@ -29,12 +31,12 @@ public class OptimiseResponse {
         this.createdAt = createdAt;
     }
 
-    public String getOptimised() {
-        return optimised;
+    public String getOptimized() {
+        return optimized;
     }
 
-    public void setOptimised(String optimised) {
-        this.optimised = optimised;
+    public void setOptimized(String optimized) {
+        this.optimized = optimized;
     }
 
     public List<String> getMissingKeys() {
@@ -59,5 +61,13 @@ public class OptimiseResponse {
 
     public void setWarnings(List<String> warnings) {
         this.warnings = warnings;
+    }
+
+    public Map<String, String> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Map<String, String> references) {
+        this.references = references;
     }
 }

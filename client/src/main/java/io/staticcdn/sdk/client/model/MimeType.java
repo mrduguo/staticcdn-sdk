@@ -38,9 +38,9 @@ public class MimeType {
         this.extension = extension;
     }
 
-    public String render(){
-        if(text)
-            return contentType+";charset=UTF-8";
+    public String render() {
+        if (text)
+            return contentType + ";charset=UTF-8";
         else
             return contentType;
     }

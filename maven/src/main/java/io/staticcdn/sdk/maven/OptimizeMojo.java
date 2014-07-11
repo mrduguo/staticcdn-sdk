@@ -1,7 +1,7 @@
 package io.staticcdn.sdk.maven;
 
 import io.staticcdn.sdk.client.StaticCdnClient;
-import io.staticcdn.sdk.client.model.OptimiserOptions;
+import io.staticcdn.sdk.client.model.OptimizerOptions;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -19,12 +19,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Optimise files with Static CDN server
+ * Optimize files with Static CDN server
  */
-@Mojo(name = "optimise", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
-public class OptimiseMojo extends AbstractMojo {
+@Mojo(name = "optimize", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+public class OptimizeMojo extends AbstractMojo {
 
-    @Parameter(defaultValue="${project}")
+    @Parameter(defaultValue = "${project}")
     private MavenProject mavenProject;
 
     /**
@@ -46,7 +46,7 @@ public class OptimiseMojo extends AbstractMojo {
     private File outputWwwRoot;
 
     /**
-     * the file relative to www root path list to be optimised
+     * the file relative to www root path list to be optimized
      */
     @Parameter
     private List<String> inputFileRelativePaths;
@@ -58,23 +58,22 @@ public class OptimiseMojo extends AbstractMojo {
     private List<String> inputFilePathPatterns;
 
     /**
-     * Optimise optimiserOptions
+     * Optimize optimizerOptions
      */
     @Parameter
-    private OptimiserOptions optimiserOptions;
+    private OptimizerOptions optimizerOptions;
 
     /**
-     * get back optimised file as text, by default will detect by file type
+     * skip the optimize
      */
-    @Parameter(defaultValue = "true")
-    private boolean retrieveOptimisedAsText;
-
+    @Parameter(defaultValue = "false", property = "skipOptimize")
+    private boolean skipOptimize;
 
     /**
-     * the string will be removed from the new output file based on original root file name
+     * the string will be removed from the new output file based on original root file name, set to skip to not backup the original file
      */
     @Parameter(defaultValue = "origin-")
-    private String optimisedFileNamePrefix;
+    private String optimizedFileNamePrefix;
 
     @Parameter
     private String apiKey;
@@ -83,6 +82,10 @@ public class OptimiseMojo extends AbstractMojo {
     private String apiSecret;
 
     public void execute() throws MojoExecutionException {
+        if (skipOptimize) {
+            getLog().info("optimize skipped");
+            return;
+        }
         if (getLog().isDebugEnabled()) {
             Logger rootLogger = Logger.getAnonymousLogger().getParent();
             rootLogger.setLevel(Level.FINE);
@@ -93,28 +96,28 @@ public class OptimiseMojo extends AbstractMojo {
             }
         }
 
-        if(!inputWwwRoots.get(0).exists()){
+        if (!inputWwwRoots.get(0).exists()) {
             inputWwwRoots.remove(0);
             File tempWwwRoot = new File("c:\\http\\" + mavenProject.getProperties().get("deploymentEnvironmentKey") + "\\wwwroot.tmp");
             inputWwwRoots.add(tempWwwRoot);
             getLog().info("FIXME: manually set wwwroot.tmp path to:" + tempWwwRoot.getAbsolutePath());
         }
 
-        if(inputFileRelativePaths==null){
-            if(inputFilePathPatterns!=null){
-                inputFileRelativePaths=new ArrayList<String>();
-            }else{
+        if (inputFileRelativePaths == null) {
+            if (inputFilePathPatterns != null) {
+                inputFileRelativePaths = new ArrayList<String>();
+            } else {
                 throw new MojoExecutionException("you must set inputFileRelativePaths or inputFilePathPattern");
             }
         }
-        if(inputFilePathPatterns!=null){
+        if (inputFilePathPatterns != null) {
             for (File inputWwwRoot : inputWwwRoots) {
-                if(inputWwwRoot.isDirectory()){
+                if (inputWwwRoot.isDirectory()) {
                     for (File foundFile : FileUtils.listFiles(inputWwwRoot, null, true)) {
-                        String relativePath=foundFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
-                        relativePath=relativePath.replaceAll("\\\\","/");
+                        String relativePath = foundFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
+                        relativePath = relativePath.replaceAll("\\\\", "/");
                         for (String filePathPattern : inputFilePathPatterns) {
-                            if(relativePath.matches(filePathPattern) && !inputFileRelativePaths.contains(relativePath)){
+                            if (relativePath.matches(filePathPattern) && !inputFileRelativePaths.contains(relativePath)) {
                                 inputFileRelativePaths.add(relativePath);
                             }
                         }
@@ -123,21 +126,20 @@ public class OptimiseMojo extends AbstractMojo {
             }
         }
 
-        if(inputFileRelativePaths.size()==0){
-            throw new MojoExecutionException("no file found to optimise");
+        if (inputFileRelativePaths.size() == 0) {
+            throw new MojoExecutionException("no file found to optimize");
         }
 
 
-        StaticCdnClient staticCdnClient = new StaticCdnClient(apiKey,apiSecret);
+        StaticCdnClient staticCdnClient = new StaticCdnClient(apiKey, apiSecret);
         for (String filePath : inputFileRelativePaths) {
             try {
-                staticCdnClient.optimise(
+                staticCdnClient.optimize(
                         inputWwwRoots,
                         outputWwwRoot,
                         filePath,
-                        optimiserOptions,
-                        retrieveOptimisedAsText,
-                        optimisedFileNamePrefix
+                        optimizerOptions,
+                        optimizedFileNamePrefix
                 );
             } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);

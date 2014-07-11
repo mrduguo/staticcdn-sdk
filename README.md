@@ -6,7 +6,7 @@ Static CDN SDK
 Documents
 ------------------
 * [API](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/API.md)
-* [Optimiser](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/Optimiser.md)
+* [Optimizer](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/Optimizer.md)
 
 
 Maven Sample
@@ -16,11 +16,11 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
     <executions>
         <execution>
             <goals>
-                <goal>optimise</goal>
+                <goal>optimize</goal>
             </goals>
             <configuration>
                 <apiKey>***</apiKey>
@@ -47,7 +47,7 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.5'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.6'
     }
 }
 apply plugin: 'groovy'
@@ -60,7 +60,7 @@ staticcdn {
     inputFilePathPatterns=[
             '^.*html$',
     ]
-    optimiserOptions=new io.staticcdn.sdk.client.model.OptimiserOptions(
+    optimizerOptions=new io.staticcdn.sdk.client.model.OptimizerOptions(
             autoEmbedCss:true,
             autoDataUrlMaxFileSize:1000
     )
