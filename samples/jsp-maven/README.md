@@ -35,3 +35,6 @@ You may press `ctrl+c` to stop the web server.
 mvn
 
 ```
+
+Preview the page with optimized resources:
+[http://www.staticcdn.io/preview/9fba7aea4d7498122852aa31b6fd5d88.html](http://www.staticcdn.io/preview/9fba7aea4d7498122852aa31b6fd5d88.html)
