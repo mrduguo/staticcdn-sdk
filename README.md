@@ -16,7 +16,7 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <executions>
         <execution>
             <goals>
@@ -47,7 +47,7 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.6'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.7'
     }
 }
 apply plugin: 'groovy'
