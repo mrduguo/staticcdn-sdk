@@ -16,7 +16,7 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.8</version>
     <executions>
         <execution>
             <goals>
@@ -47,7 +47,7 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.7'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.8'
     }
 }
 apply plugin: 'groovy'
@@ -60,10 +60,10 @@ staticcdn {
     inputFilePathPatterns=[
             '^.*html$',
     ]
-    optimizerOptions=new io.staticcdn.sdk.client.model.OptimizerOptions(
+    optimizerOptions=[
             autoEmbedCss:true,
             autoDataUrlMaxFileSize:1000
-    )
+    ]
 }
 ```
 
