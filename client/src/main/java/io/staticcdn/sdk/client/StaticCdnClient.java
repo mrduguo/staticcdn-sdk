@@ -77,19 +77,19 @@ public class StaticCdnClient {
             File outputWwwRoot,
             String filePath,
             OptimizerOptions optimizerOptions,
-            String optimizedFileNamePrefix
+            String originalFileNameSuffix, String refsFileNameSuffix
     ) throws Exception {
         if (outputWwwRoot == null) {
             outputWwwRoot = inputWwwRoots.get(0);
         }
-        backupExistingInputFile(inputWwwRoots, outputWwwRoot, filePath, optimizedFileNamePrefix);
+        backupExistingInputFile(inputWwwRoots, outputWwwRoot, filePath, originalFileNameSuffix);
 
         Map<String, File> path2fileMapping = new HashMap<String, File>();
         OptimizeRequest optimizeRequest = new OptimizeRequestBuilder(path2fileMapping).options(optimizerOptions).collectFiles(serverConfig.getOptimizeScanRules(), inputWwwRoots, filePath).build();
         OptimizeResponse optimizeResponse = optimize(inputWwwRoots, optimizeRequest);
 
 
-        writeOptimizedResultToFile(outputWwwRoot, filePath, optimizeResponse, optimizedFileNamePrefix);
+        writeOptimizedResultToFile(outputWwwRoot, filePath, optimizeResponse,refsFileNameSuffix);
 
         return optimizeResponse;
     }
@@ -203,39 +203,46 @@ public class StaticCdnClient {
     }
 
 
-    private void writeOptimizedResultToFile(File outputWwwRoot, String filePath, OptimizeResponse optimizeResponse, String optimizedFileNamePrefix) throws Exception {
+    private void writeOptimizedResultToFile(File outputWwwRoot, String filePath, OptimizeResponse optimizeResponse,String refsFileNameSuffix) throws Exception {
         String fileExtension = FilenameUtils.getExtension(filePath);
         String fileBaseName = FilenameUtils.getBaseName(filePath);
-        File outputFile = buildOutputFile(outputWwwRoot, filePath, optimizedFileNamePrefix);
+        File outputFile = buildOutputFile(outputWwwRoot, filePath);
         FileUtils.writeStringToFile(outputFile, optimizeResponse.getOptimized(), "UTF-8");
-        if (optimizeResponse.getReferences() != null) {
-            for (String referenceKey : optimizeResponse.getReferences().keySet()) {
-                System.setProperty("sio-optimized-" + referenceKey, optimizeResponse.getReferences().get(referenceKey));
-            }
-        }
-        logger.info("optimized session " + optimizeResponse.getSignature() + " as " + outputFile.getAbsolutePath());
-    }
-
-
-    private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String optimizedFileNamePrefix) throws Exception {
-        for (File inputWwwRoot : inputWwwRoots) {
-            File inputFile = new File(inputWwwRoot, filePath);
-            if (inputFile.exists()) {
-                File outputFile = buildOutputFile(outputWwwRoot, filePath, optimizedFileNamePrefix);
-                File backupOriginFile = new File(outputFile.getParentFile(), optimizedFileNamePrefix + outputFile.getName());
-                if (!backupOriginFile.exists() && !optimizedFileNamePrefix.equals("skip")) {
-                    FileUtils.copyFile(inputFile, backupOriginFile);
-                    logger.fine("back up existing output file as:" + backupOriginFile.getAbsolutePath());
+        logger.info("optimized session " + optimizeResponse.getSignature() + " to " + outputFile.getAbsolutePath());
+        if(!refsFileNameSuffix.equals("skip")){
+            StringBuilder refText = new StringBuilder();
+            refText.append("session=" + optimizeResponse.getSignature() + "\n");
+            if (optimizeResponse.getReferences() != null) {
+                for (String referenceKey : optimizeResponse.getReferences().keySet()) {
+                    refText.append(referenceKey + "=" + optimizeResponse.getReferences().get(referenceKey) + "\n");
                 }
-                return;
+            }
+            File refOutputFile = new File(outputFile.getAbsolutePath() +refsFileNameSuffix);
+            FileUtils.writeStringToFile(refOutputFile, refText.toString());
+        }
+    }
+
+
+    private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String originalFileNameSuffix) throws Exception {
+        if (!originalFileNameSuffix.equals("skip")) {
+            for (File inputWwwRoot : inputWwwRoots) {
+                File inputFile = new File(inputWwwRoot, filePath);
+                if (inputFile.exists()) {
+                    File outputFile = buildOutputFile(outputWwwRoot, filePath);
+                    File backupOriginFile = new File(outputFile.getAbsolutePath() + originalFileNameSuffix);
+                    if (!backupOriginFile.exists()) {
+                        FileUtils.copyFile(inputFile, backupOriginFile);
+                        logger.fine("back up existing output file as:" + backupOriginFile.getAbsolutePath());
+                    }
+                    return;
+                }
             }
         }
     }
 
 
-    private File buildOutputFile(File outputWwwRoot, String filePath, String optimizedFileNamePrefix) throws Exception {
+    private File buildOutputFile(File outputWwwRoot, String filePath) throws Exception {
         File outputFile = new File(outputWwwRoot, filePath);
-        outputFile = new File(outputFile.getParentFile(), outputFile.getName().replaceAll(optimizedFileNamePrefix, ""));
         return outputFile;
     }
 

@@ -49,9 +49,16 @@ public class StaticCdnPluginExtension {
     private OptimizerOptions optimizerOptions;
 
     /**
-     * the string will be removed from the new output file based on original root file name, set to skip to not backup the original file
+     * the suffix used to backup original none optimized file, set to skip to not backup the original file
      */
-    private String optimizedFileNamePrefix = "origin-";
+    private String originalFileNameSuffix = ".origin";
+
+
+
+    /**
+     * the suffix used to store the references used in the optimize session, set to skip to not create the file
+     */
+    private String refsFileNameSuffix = ".refs";
 
     private boolean skipOptimize = false;
 
@@ -100,12 +107,12 @@ public class StaticCdnPluginExtension {
         this.optimizerOptions = optimizerOptions;
     }
 
-    public String getOptimizedFileNamePrefix() {
-        return optimizedFileNamePrefix;
+    public String getOriginalFileNameSuffix() {
+        return originalFileNameSuffix;
     }
 
-    public void setOptimizedFileNamePrefix(String optimizedFileNamePrefix) {
-        this.optimizedFileNamePrefix = optimizedFileNamePrefix;
+    public void setOriginalFileNameSuffix(String originalFileNameSuffix) {
+        this.originalFileNameSuffix = originalFileNameSuffix;
     }
 
     public String getApiKey() {
@@ -130,5 +137,13 @@ public class StaticCdnPluginExtension {
 
     public void setSkipOptimize(boolean skipOptimize) {
         this.skipOptimize = skipOptimize;
+    }
+
+    public String getRefsFileNameSuffix() {
+        return refsFileNameSuffix;
+    }
+
+    public void setRefsFileNameSuffix(String refsFileNameSuffix) {
+        this.refsFileNameSuffix = refsFileNameSuffix;
     }
 }

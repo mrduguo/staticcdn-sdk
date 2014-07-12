@@ -15,9 +15,6 @@ def optimizerCommand = new File(outputFolder, "$project.artifactId-$project.vers
 exec(optimizerCommand, outputFolder)
 def optimizedFile = new File(project.basedir, "target/test-classes/wwwroot/index.html")
 assertFileOptimized(optimizedFile)
-optimizedFile.write('foo')
-exec(optimizerCommand, outputFolder)
-assertFileOptimized(optimizedFile)
 
 
 def assertFileOptimized(File expectedOptimizedFile) {

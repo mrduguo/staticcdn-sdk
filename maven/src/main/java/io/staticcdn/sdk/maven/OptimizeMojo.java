@@ -70,10 +70,16 @@ public class OptimizeMojo extends AbstractMojo {
     private boolean skipOptimize;
 
     /**
-     * the string will be removed from the new output file based on original root file name, set to skip to not backup the original file
+     * the suffix used to backup original none optimized file, set to skip to not backup the original file
      */
-    @Parameter(defaultValue = "origin-")
-    private String optimizedFileNamePrefix;
+    @Parameter(defaultValue = ".origin")
+    private String originalFileNameSuffix;
+
+    /**
+     * the suffix used to store the references used in the optimize session, set to skip to not create the file
+     */
+    @Parameter(defaultValue = ".refs")
+    private String refsFileNameSuffix;
 
     @Parameter
     private String apiKey;
@@ -139,7 +145,8 @@ public class OptimizeMojo extends AbstractMojo {
                         outputWwwRoot,
                         filePath,
                         optimizerOptions,
-                        optimizedFileNamePrefix
+                        originalFileNameSuffix,
+                        refsFileNameSuffix
                 );
             } catch (Exception e) {
                 throw new MojoExecutionException(e.getMessage(), e);

@@ -49,7 +49,7 @@ public class OptimizeTask extends DefaultTask {
                         relativePath = relativePath.replaceAll("\\\\", "/");
                         for (String filePathPattern : extension.getInputFilePathPatterns()) {
                             if (relativePath.matches(filePathPattern) && !inputFileRelativePaths.contains(relativePath)) {
-                                File originFile = new File(foundFile.getParentFile(), extension.getOptimizedFileNamePrefix() + foundFile.getName());
+                                File originFile = new File(foundFile.getParentFile(), extension.getOriginalFileNameSuffix() + foundFile.getName());
                                 if (!originFile.exists()) {
                                     getLogger().debug("found file: " + foundFile.getAbsolutePath());
                                     inputFileRelativePaths.add(relativePath);
@@ -72,7 +72,8 @@ public class OptimizeTask extends DefaultTask {
                     outputWwwRoot,
                     filePath,
                     extension.getOptimizerOptions(),
-                    extension.getOptimizedFileNamePrefix()
+                    extension.getOriginalFileNameSuffix(),
+                    extension.getRefsFileNameSuffix()
             );
         }
     }
