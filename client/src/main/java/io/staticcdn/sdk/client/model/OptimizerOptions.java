@@ -2,11 +2,20 @@ package io.staticcdn.sdk.client.model;
 
 public class OptimizerOptions {
 
+    private Integer version;
     private String profile;
     private Boolean autoEmbedCss;
     private Integer autoDataUrlMaxFileSize;
     private Integer autoSpriteMinFileSize;
     private Integer autoSpriteMaxFileSize;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
     public String getProfile() {
         return profile;
