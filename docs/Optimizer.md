@@ -40,8 +40,10 @@ INLINE OPTIONS
  sio-auto-sprite=enabled    | enable sprite even it doesn't meet sprite requirement
  sio-auto-sprite-name       |  all sprite image in a given css file will generated as 'default', you can give different name to generate multiple sprites
  sio-css-embed=enabled      | embed css to html page
+ sio-css-sync=enabled       | load css synchronously with javascript, works great in Chrome/Safari, functional work in other browsers  
  sio-js-embed=enabled       | embed js to html page
  sio-js-async=enabled       | add async flag to script tag on html page
+ sio-url-protocol=https     | use http: or https: prefix in front of default //staticcdn.io url reference 
  sio-use-cdn=enabled        | used in include file to delivery the resource via StaticCDN.io
   
 
