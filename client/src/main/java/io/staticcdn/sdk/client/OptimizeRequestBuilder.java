@@ -39,14 +39,16 @@ public class OptimizeRequestBuilder {
     }
 
     public OptimizeRequestBuilder collectFiles(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath) throws Exception {
-        collectSingleFile(optimizeScanRules, inputWwwRoots, filePath, true);
+        if(!collectSingleFile(optimizeScanRules, inputWwwRoots, filePath)){
+            throw new IllegalArgumentException("cannot find file: " + filePath);
+        }
         return this;
     }
 
 
-    private void collectSingleFile(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath, boolean isConfiguredFile) throws Exception {
+    private boolean collectSingleFile(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath) throws Exception {
         if (filePath == null) {
-            return;
+            return false;
         }
         if (filePath.indexOf('?') > 0) {
             filePath = filePath.substring(0, filePath.indexOf('?'));
@@ -57,7 +59,7 @@ public class OptimizeRequestBuilder {
         filePath = filePath.replaceAll("\\\\", "/");
 
         if (optimizeRequest.getPaths().containsKey(filePath)) {
-            return;
+            return true;
         }
 
         for (File inputWwwRoot : inputWwwRoots) {
@@ -79,14 +81,10 @@ public class OptimizeRequestBuilder {
                         }
                     }
                 }
-                return;
+                return true;
             }
         }
-        if (isConfiguredFile) {
-            throw new IllegalArgumentException("cannot find file: " + filePath);
-        } else {
-            logger.warning("file " + filePath + " not found for " + optimizeRequest.getPaths().keySet().iterator().next());
-        }
+        return false;
     }
 
     private void collectFoundUrl(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
@@ -98,14 +96,25 @@ public class OptimizeRequestBuilder {
                 foundUrl = foundUrl.substring(0, foundUrl.indexOf("#"));
             }
             String embedPath;
+            boolean fileFound;
             if (foundUrl.charAt(0) == '/') {
                 embedPath = foundUrl;
+                fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
             } else {
                 File embedFile = new File(inputFile.getParentFile(), foundUrl);
                 embedPath = embedFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
                 embedPath = FilenameUtils.normalize(embedPath);
+                fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
+                if(!fileFound){
+                    embedPath = "/"+foundUrl;
+                    embedPath = FilenameUtils.normalize(embedPath);
+                    fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
+                }
+
             }
-            collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath, false);
+            if(!fileFound){
+                logger.warning("referenced file " + foundUrl + " not found in " + inputFile.getAbsolutePath());
+            }
         }
     }
 

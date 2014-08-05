@@ -820,6 +820,7 @@ application/whoispp-query
 application/whoispp-response
 application/wita
 application/font-woff			    woff
+font/woff2          			    woff2
 application/wordperfect5.1
 application/wsdl+xml				wsdl
 application/wspolicy+xml			wspolicy
