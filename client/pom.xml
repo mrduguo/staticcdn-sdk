@@ -3,7 +3,7 @@
     <parent>
         <groupId>io.staticcdn.sdk</groupId>
         <artifactId>staticcdn-sdk</artifactId>
-        <version>0.1.11</version>
+        <version>0.1.12-SNAPSHOT</version>
     </parent>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-client</artifactId>
