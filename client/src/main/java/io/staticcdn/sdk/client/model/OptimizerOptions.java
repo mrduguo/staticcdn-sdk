@@ -4,6 +4,7 @@ public class OptimizerOptions {
 
     private Integer version;
     private String profile;
+    private String cdnBaseUrl;
     private Boolean autoEmbedCss;
     private Integer autoDataUrlMaxFileSize;
     private Integer autoSpriteMinFileSize;
@@ -23,6 +24,14 @@ public class OptimizerOptions {
 
     public void setProfile(String profile) {
         this.profile = profile;
+    }
+
+    public String getCdnBaseUrl() {
+        return cdnBaseUrl;
+    }
+
+    public void setCdnBaseUrl(String cdnBaseUrl) {
+        this.cdnBaseUrl = cdnBaseUrl;
     }
 
     public Boolean getAutoEmbedCss() {

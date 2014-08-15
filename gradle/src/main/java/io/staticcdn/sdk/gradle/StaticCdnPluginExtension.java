@@ -4,22 +4,7 @@ import io.staticcdn.sdk.client.model.OptimizerOptions;
 
 import java.util.List;
 
-/**
- * Gradle DSL Extension for 'Spring Boot'.  Most of the time Spring Boot can guess the
- * settings in this extension, but occasionally you might need to explicitly set one
- * or two of them. E.g.
- * <p/>
- * <pre>
- *     apply plugin: "spring-boot"
- *     springBoot {
- *         mainClass = 'org.demo.Application'
- *         layout = 'ZIP'
- *     }
- * </pre>
- *
- * @author Phillip Webb
- * @author Dave Syer
- */
+
 public class StaticCdnPluginExtension {
 
 

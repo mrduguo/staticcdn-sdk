@@ -4,13 +4,15 @@ Static CDN Optimizer
 GLOBAL OPTIONS
 --------------
 
-name  | description
+name  | value
 ------------:|:---------------
- profile  |  values: safe (default) | relaxed
- autoEmbedCss  |  values: false (default) , true
- autoDataUrlMaxFileSize  | values: null (default) , any positive numbers
- autoSpriteMinFileSize  | values: null (default) , any positive numbers
- autoSpriteMaxFileSize  | values: null (default) , any positive numbers
+ version  |  null (default), any positive numbers
+ profile  |  safe (default), relaxed
+ cdnBaseUrl  |  null (default will use built-in shared CDN), any url which have access the optimized files 
+ autoEmbedCss  |  false (default) , true
+ autoDataUrlMaxFileSize  | null (default), any positive numbers
+ autoSpriteMinFileSize  | null (default), any positive numbers
+ autoSpriteMaxFileSize  | null (default), any positive numbers
 
 
 The global options can be passed via maven/gradle plugin or comments in first text file with json format. Sample global optimizer options:
