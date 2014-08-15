@@ -3,10 +3,13 @@ Static CDN SDK
 
 
 
-Documents
+Documentation
 ------------------
-* [API](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/API.md)
-* [Optimizer](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/Optimizer.md)
+* [Optimizer configuration](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/Optimizer.md)
+* [Standalone optimizer](https://github.com/mrduguo/staticcdn-sdk/blob/master/docs/StandaloneOptimizer.md)
+* Sample projects
+  * [html with standalone optimizer](https://github.com/mrduguo/staticcdn-sdk/tree/master/samples/html-standalone) 
+  * [jsp with maven build system](https://github.com/mrduguo/staticcdn-sdk/tree/master/samples/jsp-maven) 
 
 
 Maven Sample
