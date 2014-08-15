@@ -1,0 +1,19 @@
+defaultTasks 'clean', 'build'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.12'
+    }
+}
+apply plugin: 'groovy'
+apply plugin: 'staticcdn'
+
+staticcdn {
+    inputWwwRoots = ['wwwroot/']
+    outputWwwRoot = 'build/optimized-files/'
+    inputFilePathPatterns = [
+            '^.*html$',
+    ]
+}
