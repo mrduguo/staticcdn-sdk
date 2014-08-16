@@ -1,4 +1,4 @@
-defaultTasks 'clean', 'build'
+defaultTasks 'staticcdnOptimize'
 buildscript {
     repositories {
         mavenCentral()
@@ -7,7 +7,6 @@ buildscript {
         classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:${project.version}'
     }
 }
-apply plugin: 'groovy'
 apply plugin: 'staticcdn'
 
 staticcdn {
@@ -22,12 +21,3 @@ staticcdn {
             autoDataUrlMaxFileSize: 1000
     ]
 }
-
-task prepareWwwroot(type: Copy, dependsOn: 'staticcdnOptimize') {
-    from 'wwwroot/'
-    from 'build/optimized-files/'
-    exclude '**/original-*'
-    into { 'build/optimized-wwwroot/' }
-}
-tasks.build.dependsOn prepareWwwroot
-

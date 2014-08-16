@@ -1,4 +1,4 @@
-defaultTasks 'clean', 'build'
+defaultTasks 'staticcdnOptimize'
 buildscript {
     repositories {
         mavenCentral()
@@ -7,7 +7,6 @@ buildscript {
         classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.12'
     }
 }
-apply plugin: 'groovy'
 apply plugin: 'staticcdn'
 
 staticcdn {
