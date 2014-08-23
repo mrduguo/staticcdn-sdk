@@ -19,7 +19,7 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.12</version>
+    <version>0.1.13</version>
     <executions>
         <execution>
             <goals>
@@ -50,7 +50,7 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.12'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.13'
     }
 }
 apply plugin: 'groovy'
@@ -75,10 +75,8 @@ SDK Build Commands
 
 ```sh
 
-cd /opt/staticcdn/src/staticcdn-sdk
-mvn clean install
+(cd /opt/staticcdn/src/staticcdn-sdk && mvn clean install)
 
-cd /opt/staticcdn/src/staticcdn-sdk
-mvn release:clean && mvn release:prepare && mvn release:perform
+(cd /opt/staticcdn/src/staticcdn-sdk && mvn release:clean && mvn release:prepare && mvn release:perform)
 
 ```

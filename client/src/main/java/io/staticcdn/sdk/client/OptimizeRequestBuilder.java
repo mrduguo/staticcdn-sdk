@@ -39,7 +39,7 @@ public class OptimizeRequestBuilder {
     }
 
     public OptimizeRequestBuilder collectFiles(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, String filePath) throws Exception {
-        if(!collectSingleFile(optimizeScanRules, inputWwwRoots, filePath)){
+        if (!collectSingleFile(optimizeScanRules, inputWwwRoots, filePath)) {
             throw new IllegalArgumentException("cannot find file: " + filePath);
         }
         return this;
@@ -95,27 +95,35 @@ public class OptimizeRequestBuilder {
             if (foundUrl.indexOf("#") > 0) {
                 foundUrl = foundUrl.substring(0, foundUrl.indexOf("#"));
             }
-            String embedPath;
-            boolean fileFound;
-            if (foundUrl.charAt(0) == '/') {
-                embedPath = foundUrl;
-                fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
-            } else {
-                File embedFile = new File(inputFile.getParentFile(), foundUrl);
-                embedPath = embedFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
-                embedPath = FilenameUtils.normalize(embedPath);
-                fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
-                if(!fileFound){
-                    embedPath = "/"+foundUrl;
-                    embedPath = FilenameUtils.normalize(embedPath);
-                    fileFound=collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
-                }
-
+            boolean fileFound = collectFromFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, foundUrl);
+            if (!fileFound) {
+                String inputFileExt = FilenameUtils.getExtension(inputFile.getName());
+                fileFound = collectFromFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, foundUrl + "." + inputFileExt);
             }
-            if(!fileFound){
+            if (!fileFound && !foundUrl.startsWith("@")) {
                 logger.warning("referenced file " + foundUrl + " not found in " + inputFile.getAbsolutePath());
             }
         }
+    }
+
+    private boolean collectFromFoundUrl(List<OptimizeScanRule> optimizeScanRules, List<File> inputWwwRoots, File inputWwwRoot, File inputFile, String foundUrl) throws Exception {
+        String embedPath;
+        boolean fileFound;
+        if (foundUrl.charAt(0) == '/') {
+            embedPath = foundUrl;
+            fileFound = collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
+        } else {
+            File embedFile = new File(inputFile.getParentFile(), foundUrl);
+            embedPath = embedFile.getAbsolutePath().substring(inputWwwRoot.getAbsolutePath().length());
+            embedPath = FilenameUtils.normalize(embedPath);
+            fileFound = collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
+            if (!fileFound) {
+                embedPath = "/" + foundUrl;
+                embedPath = FilenameUtils.normalize(embedPath);
+                fileFound = collectSingleFile(optimizeScanRules, inputWwwRoots, embedPath);
+            }
+        }
+        return fileFound;
     }
 
     public static InputStream checkForUtf8BOMAndDiscardIfAny(InputStream inputStream) throws IOException {
