@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.13'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.14'
     }
 }
 apply plugin: 'staticcdn'
