@@ -10,8 +10,8 @@ public class StaticCdnPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getExtensions().create("staticcdn", StaticCdnPluginExtension.class);
         project.getExtensions().getExtraProperties().set("OptimizeTask", OptimizeTask.class);
-        OptimizeTask optimizeTask = project.getTasks().create("staticcdnOptimize", OptimizeTask.class);
-        optimizeTask.setDescription("Optimize static assets with StaticCDN.io");
+        OptimizePluginTask optimizeTask = project.getTasks().create("staticcdnOptimize", OptimizePluginTask.class);
+        optimizeTask.setDescription("Optimize static assets with statico.io");
         optimizeTask.setGroup("build");
         try {
             project.getTasks().getByName("classes").dependsOn(optimizeTask);

@@ -102,13 +102,6 @@ public class OptimizeMojo extends AbstractMojo {
             }
         }
 
-        if (!inputWwwRoots.get(0).exists()) {
-            inputWwwRoots.remove(0);
-            File tempWwwRoot = new File("c:\\http\\" + mavenProject.getProperties().get("deploymentEnvironmentKey") + "\\wwwroot.tmp");
-            inputWwwRoots.add(tempWwwRoot);
-            getLog().info("FIXME: manually set wwwroot.tmp path to:" + tempWwwRoot.getAbsolutePath());
-        }
-
         if (inputFileRelativePaths == null) {
             if (inputFilePathPatterns != null) {
                 inputFileRelativePaths = new ArrayList<String>();

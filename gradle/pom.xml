@@ -13,6 +13,11 @@
             <artifactId>staticcdn-sdk-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.8.9.1</version>
+        </dependency>
         <!-- gradle -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

@@ -4,15 +4,24 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.14'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.15'
     }
 }
-apply plugin: 'staticcdn'
+task release() dependsOn 'staticcdnOptimize', 'uploadFilesToS3'
 
-staticcdn {
-    inputWwwRoots = ['wwwroot/']
-    outputWwwRoot = 'build/optimized-files/'
-    inputFilePathPatterns = [
-            '^.*html$',
+
+task staticcdnOptimize(type: io.staticcdn.sdk.gradle.OptimizeTask) {
+    config = [
+            inputWwwRoots        : ['wwwroot/'],
+            outputWwwRoot        : 'build/staticcdn-optimized-files/',
+            inputFilePathPatterns: [
+                    '^.*html$',
+            ]
     ]
+}
+
+task uploadFilesToS3(type: io.staticcdn.sdk.gradle.S3Task) {
+    bucketName='your-bucket-to-test'
+    inputFolders=['build/staticcdn-optimized-files/']
+    inputFilePathPatterns=['^.*html$']
 }

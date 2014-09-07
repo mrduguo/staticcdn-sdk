@@ -13,7 +13,7 @@ This sample project have samples for following technologies:
 
 * Requirement `JDK 1.6+` in system path
 * Double click the `optimizer/optimizer.bat` to optimize
-* You will find the optimized file in `build/optimized-files` folder
+* You will find the optimized file in `build/staticcdn-optimized-files` folder
 * Links
   * [original page](http://cdn.rawgit.com/mrduguo/staticcdn-sdk/master/samples/html-standalone/wwwroot/index.html)
   * [optimized page](http://www.staticcdn.io/preview/9a8b68cadac8ce70a66769e322b3a72a.html)
