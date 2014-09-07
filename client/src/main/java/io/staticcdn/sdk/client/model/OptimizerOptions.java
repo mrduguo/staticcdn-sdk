@@ -5,12 +5,15 @@ public class OptimizerOptions {
     private Integer version;
     private String profile;
     private String cdnBaseUrl;
+
     private Boolean autoEmbedCss;
     private Integer autoDataUrlMaxFileSize;
     private Integer autoSpriteMinFileSize;
     private Integer autoSpriteMaxFileSize;
     private String cleancssOptions;
     private String lessOptions;
+
+    private Boolean autoEmbedJs;
     private String uglifyjsOptions;
 
     public Integer getVersion() {
@@ -69,12 +72,12 @@ public class OptimizerOptions {
         this.autoSpriteMaxFileSize = autoSpriteMaxFileSize;
     }
 
-    public String getUglifyjsOptions() {
-        return uglifyjsOptions;
+    public String getCleancssOptions() {
+        return cleancssOptions;
     }
 
-    public void setUglifyjsOptions(String uglifyjsOptions) {
-        this.uglifyjsOptions = uglifyjsOptions;
+    public void setCleancssOptions(String cleancssOptions) {
+        this.cleancssOptions = cleancssOptions;
     }
 
     public String getLessOptions() {
@@ -85,11 +88,19 @@ public class OptimizerOptions {
         this.lessOptions = lessOptions;
     }
 
-    public String getCleancssOptions() {
-        return cleancssOptions;
+    public Boolean getAutoEmbedJs() {
+        return autoEmbedJs;
     }
 
-    public void setCleancssOptions(String cleancssOptions) {
-        this.cleancssOptions = cleancssOptions;
+    public void setAutoEmbedJs(Boolean autoEmbedJs) {
+        this.autoEmbedJs = autoEmbedJs;
+    }
+
+    public String getUglifyjsOptions() {
+        return uglifyjsOptions;
+    }
+
+    public void setUglifyjsOptions(String uglifyjsOptions) {
+        this.uglifyjsOptions = uglifyjsOptions;
     }
 }
