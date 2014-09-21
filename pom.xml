@@ -7,7 +7,7 @@
     </parent>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk</artifactId>
-    <version>0.1.16</version>
+    <version>0.1.17-SNAPSHOT</version>
     <name>Static CDN SDK</name>
     <description>
         Software Development Kits to work with staticcdn.io.
