@@ -13,6 +13,6 @@ statico {
     inputWwwRoots = ['wwwroot/']
     outputWwwRoot = 'build/optimized-files/'
     inputFilePathPatterns = [
-            '^.*html$',
+            '/index.html',
     ]
 }
