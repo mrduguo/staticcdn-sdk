@@ -9,10 +9,10 @@ buildscript {
     }
 }
 apply plugin: 'groovy'
-apply plugin: 'staticcdn'
+apply plugin: 'statico'
 
 
-staticcdn {
+statico {
     inputWwwRoots = ['../']
     inputFilePathPatterns = [
             '^.*html$',

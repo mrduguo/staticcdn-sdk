@@ -1,4 +1,4 @@
-defaultTasks 'staticcdnOptimize'
+defaultTasks 'staticoOptimize'
 buildscript {
     repositories {
         mavenCentral()
@@ -7,9 +7,9 @@ buildscript {
         classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:${project.version}'
     }
 }
-apply plugin: 'staticcdn'
+apply plugin: 'statico'
 
-staticcdn {
+statico {
     inputWwwRoots = ['wwwroot/']
     outputWwwRoot = 'build/optimized-files/'
     inputFilePathPatterns = [
