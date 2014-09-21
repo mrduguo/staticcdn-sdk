@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-samples-jsp-maven</artifactId>
-    <version>0.1.15</version>
+    <version>0.1.16</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -29,7 +29,7 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${project.build.directory}/staticcdn-optimized-files</directory>
+                            <directory>${project.build.directory}/statico-optimized-files</directory>
                         </resource>
                     </webResources>
                 </configuration>
@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>io.staticcdn.sdk</groupId>
                 <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-                <version>0.1.15</version>
+                <version>0.1.16</version>
                 <executions>
                     <execution>
                         <id>optimize-static-resource</id>
@@ -45,14 +45,10 @@
                             <goal>optimize</goal>
                         </goals>
                         <configuration>
-                            <!--
-                                <apiKey>***</apiKey>
-                                <apiSecret>***</apiSecret>
-                            -->
                             <inputWwwRoots>
                                 <inputWwwRoot>${basedir}/src/main/webapp</inputWwwRoot>
                             </inputWwwRoots>
-                            <outputWwwRoot>${project.build.directory}/staticcdn-optimized-files</outputWwwRoot>
+                            <outputWwwRoot>${project.build.directory}/statico-optimized-files</outputWwwRoot>
                             <inputFilePathPatterns>
                                 <inputFilePathPattern>/static/include/.*inc</inputFilePathPattern>
                             </inputFilePathPatterns>
@@ -62,36 +58,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>run-web-server-at-port</id>
-            <activation>
-                <property>
-                    <name>runWebServerAtPort</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <version>9.2.1.v20140609</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>post-integration-test</phase>
-                                <configuration>
-                                    <httpConnector>
-                                        <port>${runWebServerAtPort}</port>
-                                    </httpConnector>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

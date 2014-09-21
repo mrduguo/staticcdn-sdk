@@ -17,7 +17,7 @@ This sample project have samples for following technologies:
 ```sh
 
 # cd staticcdn-sdk/samples/jsp-maven
-mvn -DrunWebServerAtPort=8081
+mvn -DrunWebServerAtPort=8081 -DskipOptimize=true
 
 ```
 
@@ -37,4 +37,4 @@ mvn
 ```
 
 Preview the page with optimized resources:
-[http://www.staticcdn.io/preview/9fba7aea4d7498122852aa31b6fd5d88.html](http://www.staticcdn.io/preview/9fba7aea4d7498122852aa31b6fd5d88.html)
+[http://www.statico.io/preview/610bfe5c95d5dcd47b211953ad14cec4.html](http://www.statico.io/preview/610bfe5c95d5dcd47b211953ad14cec4.html)

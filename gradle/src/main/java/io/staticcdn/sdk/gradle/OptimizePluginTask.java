@@ -13,7 +13,7 @@ public class OptimizePluginTask extends DefaultTask {
 
     @TaskAction
     public void optimize() throws Exception {
-        StaticCdnPluginExtension extension = getConfig();
+        StaticoPluginExtension extension = getConfig();
         if (extension.isSkipOptimize() || System.getProperty("skipOptimize")!=null) {
             getLogger().warn("optimize skipped");
             return;
@@ -88,7 +88,7 @@ public class OptimizePluginTask extends DefaultTask {
         }
     }
 
-    protected StaticCdnPluginExtension getConfig() {
-        return getProject().getExtensions().getByType(StaticCdnPluginExtension.class);
+    protected StaticoPluginExtension getConfig() {
+        return getProject().getExtensions().getByType(StaticoPluginExtension.class);
     }
 }

@@ -1,27 +1,18 @@
-defaultTasks 'staticcdnOptimize'
+defaultTasks 'staticoOptimize'
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.15'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.16'
     }
 }
-task release() dependsOn 'staticcdnOptimize', 'uploadFilesToS3'
 
-
-task staticcdnOptimize(type: io.staticcdn.sdk.gradle.OptimizeTask) {
-    config = [
-            inputWwwRoots        : ['wwwroot/'],
-            outputWwwRoot        : 'build/staticcdn-optimized-files/',
-            inputFilePathPatterns: [
-                    '^.*html$',
-            ]
+apply plugin: 'statico'
+statico {
+    inputWwwRoots = ['wwwroot/']
+    outputWwwRoot = 'build/optimized-files/'
+    inputFilePathPatterns = [
+            '^.*html$',
     ]
-}
-
-task uploadFilesToS3(type: io.staticcdn.sdk.gradle.S3Task) {
-    bucketName='your-bucket-to-test'
-    inputFolders=['build/staticcdn-optimized-files/']
-    inputFilePathPatterns=['^.*html$']
 }

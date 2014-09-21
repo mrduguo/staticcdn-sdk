@@ -19,7 +19,7 @@ Maven Sample
 <plugin>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-    <version>0.1.15</version>
+    <version>0.1.16</version>
     <executions>
         <execution>
             <goals>
@@ -50,12 +50,12 @@ Gradle Sample
 ```Groovy
 buildscript {
     dependencies {
-        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.15'
+        classpath 'io.staticcdn.sdk:staticcdn-sdk-gradle-plugin:0.1.16'
     }
 }
 apply plugin: 'groovy'
-apply plugin: 'staticcdn'
-staticcdn {
+apply plugin: 'statico'
+statico {
     apiKey='***'
     apiSecret='***'
     inputWwwRoots=['wwwroot/']

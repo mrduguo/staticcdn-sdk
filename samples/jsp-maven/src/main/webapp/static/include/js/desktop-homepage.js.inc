@@ -1,1 +1,0 @@
-<script type="text/javascript" src="/static/js/desktop-homepage.js?sio-js-embed=enabled"></script>
