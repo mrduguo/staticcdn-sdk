@@ -2,9 +2,6 @@ body {
     background-color: lightgrey;
 }
 
-.js-show {
-    display: none;
-}
 
 .logo-icon {
     background-image: url('../images/logo.png?sio-data-url=enabled');
@@ -15,8 +12,4 @@ body {
 
 .css-text {
     color: blue;
-}
-
-.js-text {
-    color: green;
 }

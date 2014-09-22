@@ -1,3 +1,5 @@
 $(function(){
-    $('.js-show').show();
+    if(console && console.log){
+        console.log('loaded')
+    }
 });
