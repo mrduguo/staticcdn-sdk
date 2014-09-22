@@ -15,7 +15,7 @@ This sample project have samples for following technologies:
 * You will find the optimized file in `build/staticcdn-optimized-files` folder
 * Links
   * [original page](http://cdn.rawgit.com/mrduguo/staticcdn-sdk/master/samples/html-standalone/wwwroot/index.html)
-  * [optimized page](http://www.statico.io/preview/101e8eeb55e249610b79245f5b660a9c.html)
+  * [optimized page](http://www.statico.io/preview/be46b304e08c465ed950233496a1a22e.html)
   * [webpagetest.org speed index: original 901 vs 302 optimized](http://www.webpagetest.org/video/compare.php?ival=100&tests=140815_WS_PKM-r:2-c:0-e:1.0,140815_B6_PKX-r:2-c:0-e:0.5)
 
 
