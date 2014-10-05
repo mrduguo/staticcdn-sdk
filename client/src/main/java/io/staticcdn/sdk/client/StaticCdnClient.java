@@ -32,11 +32,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -299,18 +299,41 @@ public class StaticCdnClient {
 
     private void setupCredentials(String apiKey, String apiSecret, DefaultHttpClient defaultHttpClient) {
         if (StringUtils.isEmpty(apiKey)) {
-            apiKey = System.getenv("STATIC_CDN_API_KEY");
+            apiKey = System.getenv("STATICO_API_KEY");
             if (StringUtils.isEmpty(apiKey)) {
-                apiKey = System.getProperty("staticCdnApiKey");
+                apiKey = System.getProperty("staticoApiKey");
                 if (StringUtils.isEmpty(apiKey)) {
-                    apiKey = "anonymous";
+                    Properties prop = new Properties();
+                    File credentialFile = new File(System.getProperty("user.home"), ".statico/credentials");
+                    if(credentialFile.isFile()){
+                        InputStream input = null;
+                        try {
+                            input = new FileInputStream(credentialFile);
+                            prop.load(input);
+                            apiKey=prop.getProperty("apiKey");
+                            apiSecret=prop.getProperty("apiSecret");
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } finally {
+                            if (input != null) {
+                                try {
+                                    input.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                    if (StringUtils.isEmpty(apiKey)) {
+                        apiKey = "anonymous";
+                    }
                 }
             }
         }
         if (StringUtils.isEmpty(apiSecret)) {
-            apiSecret = System.getenv("STATIC_CDN_API_SECRET");
+            apiSecret = System.getenv("STATICO_API_SECRET");
             if (StringUtils.isEmpty(apiSecret)) {
-                apiSecret = System.getProperty("staticCdnApiSecret");
+                apiSecret = System.getProperty("staticoApiSecret");
                 if (StringUtils.isEmpty(apiSecret)) {
                     apiSecret = "none";
                 }

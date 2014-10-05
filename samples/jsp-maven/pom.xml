@@ -40,17 +40,23 @@
                 <version>0.1.16</version>
                 <executions>
                     <execution>
-                        <id>optimize-static-resource</id>
+                        <id>optimize-static-assets</id>
                         <goals>
                             <goal>optimize</goal>
                         </goals>
                         <configuration>
                             <inputWwwRoots>
-                                <inputWwwRoot>${basedir}/src/main/webapp</inputWwwRoot>
+                                <inputWwwRoot>
+                                    ${basedir}/src/main/webapp
+                                </inputWwwRoot>
                             </inputWwwRoots>
-                            <outputWwwRoot>${project.build.directory}/statico-optimized-files</outputWwwRoot>
+                            <outputWwwRoot>
+                                ${project.build.directory}/statico-optimized-files
+                            </outputWwwRoot>
                             <inputFilePathPatterns>
-                                <inputFilePathPattern>/static/include/.*inc</inputFilePathPattern>
+                                <inputFilePathPattern>
+                                    /static/include/.*inc
+                                </inputFilePathPattern>
                             </inputFilePathPatterns>
                         </configuration>
                     </execution>
