@@ -28,6 +28,7 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 
@@ -42,11 +43,6 @@ import java.util.logging.Logger;
 
 public class StaticCdnClient {
 
-    public static void main(String[] args) {
-        for (Object key : System.getProperties().keySet()) {
-            System.out.println(key + ":" + System.getProperty((String) key));
-        }
-    }
 
     private static Logger logger = Logger.getLogger(StaticCdnClient.class.getName());
 
@@ -64,6 +60,7 @@ public class StaticCdnClient {
     public StaticCdnClient(String apiKey, String apiSecret) {
         BasicHttpParams httpParams = new BasicHttpParams();
         httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, false);
+        httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
         DefaultHttpClient defaultHttpClient = new DefaultHttpClient(httpParams);
         httpClient = defaultHttpClient;
 
@@ -208,7 +205,7 @@ public class StaticCdnClient {
         String fileBaseName = FilenameUtils.getBaseName(filePath);
         File outputFile = buildOutputFile(outputWwwRoot, filePath);
         FileUtils.writeStringToFile(outputFile, optimizeResponse.getOptimized(), "UTF-8");
-        logger.info("optimized session " + optimizeResponse.getSignature() + " to " + outputFile.getAbsolutePath());
+        System.out.println("optimized session " + optimizeResponse.getSignature() + " to " + outputFile.getCanonicalPath());
         if(!refsFileNameSuffix.equals("skip")){
             StringBuilder refText = new StringBuilder();
             refText.append("session=" + optimizeResponse.getSignature() + "\n");
