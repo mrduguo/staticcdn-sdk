@@ -11,7 +11,7 @@ apply plugin: 'statico'
 
 statico {
     inputWwwRoots = ['wwwroot/']
-    outputWwwRoot = 'build/optimized-files/'
+    outputWwwRoot = 'build/statico-optimized-files/'
     inputFilePathPatterns = [
             '^.*html$',
             '^.*inc$',
