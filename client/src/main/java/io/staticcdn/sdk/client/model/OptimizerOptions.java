@@ -10,10 +10,10 @@ public class OptimizerOptions {
     private Integer autoDataUrlMaxFileSize;
     private Integer autoSpriteMinFileSize;
     private Integer autoSpriteMaxFileSize;
+    private Boolean autoEmbedJs;
+
     private String cleancssOptions;
     private String lessOptions;
-
-    private Boolean autoEmbedJs;
     private String uglifyjsOptions;
 
     public Integer getVersion() {
