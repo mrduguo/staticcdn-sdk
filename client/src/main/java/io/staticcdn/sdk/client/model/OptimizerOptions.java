@@ -13,6 +13,7 @@ public class OptimizerOptions {
     private Boolean autoEmbedJs;
 
     private String cleancssOptions;
+    private String uncssOptions;
     private String lessOptions;
     private String uglifyjsOptions;
 
@@ -78,6 +79,14 @@ public class OptimizerOptions {
 
     public void setCleancssOptions(String cleancssOptions) {
         this.cleancssOptions = cleancssOptions;
+    }
+
+    public String getUncssOptions() {
+        return uncssOptions;
+    }
+
+    public void setUncssOptions(String uncssOptions) {
+        this.uncssOptions = uncssOptions;
     }
 
     public String getLessOptions() {
