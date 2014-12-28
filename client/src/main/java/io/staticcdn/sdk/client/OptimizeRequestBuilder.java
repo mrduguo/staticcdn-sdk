@@ -77,7 +77,14 @@ public class OptimizeRequestBuilder {
                         String fileText = FileUtils.readFileToString(inputFile, "UTF-8");
                         Matcher urlMatcher = Pattern.compile(optimizeScanRule.getUrlPattern()).matcher(fileText);
                         while (urlMatcher.find()) {
-                            collectFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, urlMatcher.group(optimizeScanRule.getUrlGroupIndex()));
+                            String matchedUrl = urlMatcher.group(optimizeScanRule.getUrlGroupIndex());
+                            if(matchedUrl.indexOf(" ")>0){
+                                for(String singleUrl:matchedUrl.split(",")){
+                                    collectFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, singleUrl.split(" ")[0]);
+                                }
+                            }else{
+                                collectFoundUrl(optimizeScanRules, inputWwwRoots, inputWwwRoot, inputFile, matchedUrl);
+                            }
                         }
                     }
                 }
