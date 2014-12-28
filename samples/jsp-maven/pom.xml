@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.staticcdn.sdk</groupId>
     <artifactId>staticcdn-sdk-samples-jsp-maven</artifactId>
-    <version>0.1.21</version>
+    <version>0.1.22</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>io.staticcdn.sdk</groupId>
                 <artifactId>staticcdn-sdk-maven-plugin</artifactId>
-                <version>0.1.21</version>
+                <version>0.1.22</version>
                 <executions>
                     <execution>
                         <id>optimize-static-assets</id>
