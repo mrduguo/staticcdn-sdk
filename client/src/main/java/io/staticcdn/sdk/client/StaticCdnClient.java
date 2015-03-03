@@ -362,9 +362,10 @@ public class StaticCdnClient {
             this.apiServerList.add(System.getProperty("staticCdnApiServerBaseUrl"));
             serverConfig = apiCallConfig();
         } else {
-            this.apiServerList.add("https://api.staticcdn.io");
-            this.apiServerList.add("https://primary-api.staticcdn.io");
-            this.apiServerList.add("https://backup-api.staticcdn.io");
+            this.apiServerList.add("https://api.statico.io");
+            this.apiServerList.add("https://primary-api.statico.io");
+            this.apiServerList.add("https://backup-api.statico.io");
+            this.apiServerList.add("http://www.statico.io");
             serverConfig = apiCallConfig();
             this.apiServerList = serverConfig.getApiServerList();
         }
