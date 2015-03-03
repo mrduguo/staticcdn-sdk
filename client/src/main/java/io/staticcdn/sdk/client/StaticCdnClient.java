@@ -366,6 +366,7 @@ public class StaticCdnClient {
             this.apiServerList.add("https://primary-api.statico.io");
             this.apiServerList.add("https://backup-api.statico.io");
             this.apiServerList.add("http://www.statico.io");
+            this.apiServerList.add("http://www.staticcdn.io");
             serverConfig = apiCallConfig();
             this.apiServerList = serverConfig.getApiServerList();
         }
