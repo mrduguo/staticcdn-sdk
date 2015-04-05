@@ -3,8 +3,8 @@ package io.staticcdn.sdk.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.staticcdn.sdk.client.model.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
@@ -85,8 +85,7 @@ public class StaticCdnClient {
         OptimizeRequest optimizeRequest = new OptimizeRequestBuilder(path2fileMapping).options(optimizerOptions).collectFiles(serverConfig.getOptimizeScanRules(), inputWwwRoots, filePath).build();
         OptimizeResponse optimizeResponse = optimize(inputWwwRoots, optimizeRequest);
 
-
-        writeOptimizedResultToFile(outputWwwRoot, filePath, optimizeResponse,refsFileNameSuffix);
+        new RefsDownloader(this,outputWwwRoot, filePath, optimizerOptions, optimizeResponse, refsFileNameSuffix).execute();
 
         return optimizeResponse;
     }
@@ -136,6 +135,27 @@ public class StaticCdnClient {
                     throw ex;
                 }
                 logger.log(Level.WARNING, "failed to optimize with server " + apiServerUrl + ": " + ex.getMessage());
+                lastException = ex;
+            }
+        }
+        throw lastException;
+    }
+
+    protected void apiCallDownload(String hashFile,File downloadTarget) throws Exception {
+        Exception lastException = null;
+        for (String apiServerUrl : apiServerList) {
+            try {
+                HttpGet request = new HttpGet(apiServerUrl + "/"+hashFile);
+                executeRequest(request, true);
+                FileUtils.copyInputStreamToFile(lastResponse.getEntity().getContent(), downloadTarget);
+                lastResponse=null;
+                String actualMd5=DigestUtils.md5Hex(new FileInputStream(downloadTarget));
+                if(!hashFile.startsWith(actualMd5)){
+                    throw new RuntimeException("downloaded file "+downloadTarget.getAbsolutePath()+" hash "+actualMd5+" is different from expect file "+hashFile);
+                }
+                return;
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, "failed to download file from server " + apiServerUrl + ": " + ex.getMessage());
                 lastException = ex;
             }
         }
@@ -200,26 +220,6 @@ public class StaticCdnClient {
     }
 
 
-    private void writeOptimizedResultToFile(File outputWwwRoot, String filePath, OptimizeResponse optimizeResponse,String refsFileNameSuffix) throws Exception {
-        String fileExtension = FilenameUtils.getExtension(filePath);
-        String fileBaseName = FilenameUtils.getBaseName(filePath);
-        File outputFile = buildOutputFile(outputWwwRoot, filePath);
-        FileUtils.writeStringToFile(outputFile, optimizeResponse.getOptimized(), "UTF-8");
-        System.out.println("optimized session " + optimizeResponse.getSignature() + " to " + outputFile.getCanonicalPath());
-        if(!refsFileNameSuffix.equals("skip")){
-            StringBuilder refText = new StringBuilder();
-            refText.append("session=" + optimizeResponse.getSignature() + "\n");
-            if (optimizeResponse.getReferences() != null) {
-                for (String referenceKey : optimizeResponse.getReferences().keySet()) {
-                    refText.append(referenceKey + "=" + optimizeResponse.getReferences().get(referenceKey) + "\n");
-                }
-            }
-            File refOutputFile = new File(outputFile.getAbsolutePath() +refsFileNameSuffix);
-            FileUtils.writeStringToFile(refOutputFile, refText.toString());
-        }
-    }
-
-
     private void backupExistingInputFile(List<File> inputWwwRoots, File outputWwwRoot, String filePath, String originalFileNameSuffix) throws Exception {
         if (!originalFileNameSuffix.equals("skip")) {
             for (File inputWwwRoot : inputWwwRoots) {
@@ -238,7 +238,7 @@ public class StaticCdnClient {
     }
 
 
-    private File buildOutputFile(File outputWwwRoot, String filePath) throws Exception {
+    protected File buildOutputFile(File outputWwwRoot, String filePath) throws Exception {
         File outputFile = new File(outputWwwRoot, filePath);
         return outputFile;
     }
@@ -274,7 +274,7 @@ public class StaticCdnClient {
 
         lastResponse = httpClient.execute(targetHost, request, localContext);
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("executed request with response " + lastResponse.getStatusLine().getReasonPhrase() + " body: " + readTextBody());
+            logger.fine("executed request with response " + lastResponse.getStatusLine().getReasonPhrase());
         }
         if (verifyStatusOk && lastResponse.getStatusLine().getStatusCode() != 200) {
             String errorMessage = null;
@@ -289,7 +289,6 @@ public class StaticCdnClient {
                 errorMessage = request.getMethod() + " : " + uri + " failed with status code " + lastResponse.getStatusLine().getStatusCode();
             }
             throw new RuntimeException(errorMessage);
-
         }
         return lastResponse;
     }
@@ -301,7 +300,13 @@ public class StaticCdnClient {
                 apiKey = System.getProperty("staticoApiKey");
                 if (StringUtils.isEmpty(apiKey)) {
                     Properties prop = new Properties();
-                    File credentialFile = new File(System.getProperty("user.home"), ".statico/credentials");
+                    File credentialFile = null;
+                    String staticoConfigFile = System.getProperty("staticoConfigFile");
+                    if(StringUtils.isEmpty(staticoConfigFile)){
+                        credentialFile = new File(System.getProperty("user.home"), ".statico/credentials");
+                    }else{
+                        credentialFile = new File(staticoConfigFile);
+                    }
                     if(credentialFile.isFile()){
                         InputStream input = null;
                         try {

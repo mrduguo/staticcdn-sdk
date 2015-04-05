@@ -5,6 +5,7 @@ public class OptimizerOptions {
     private Integer version;
     private String profile;
     private String cdnBaseUrl;
+    private Boolean downloadRefs;
 
     private Boolean autoEmbedCss;
     private Integer autoDataUrlMaxFileSize;
@@ -41,7 +42,15 @@ public class OptimizerOptions {
         this.cdnBaseUrl = cdnBaseUrl;
     }
 
-    public Boolean getAutoEmbedCss() {
+    public Boolean isDownloadRefs() {
+        return downloadRefs;
+    }
+
+    public void setDownloadRefs(Boolean downloadRefs) {
+        this.downloadRefs = downloadRefs;
+    }
+
+    public Boolean isAutoEmbedCss() {
         return autoEmbedCss;
     }
 
@@ -73,6 +82,14 @@ public class OptimizerOptions {
         this.autoSpriteMaxFileSize = autoSpriteMaxFileSize;
     }
 
+    public Boolean isAutoEmbedJs() {
+        return autoEmbedJs;
+    }
+
+    public void setAutoEmbedJs(Boolean autoEmbedJs) {
+        this.autoEmbedJs = autoEmbedJs;
+    }
+
     public String getCleancssOptions() {
         return cleancssOptions;
     }
@@ -95,14 +112,6 @@ public class OptimizerOptions {
 
     public void setLessOptions(String lessOptions) {
         this.lessOptions = lessOptions;
-    }
-
-    public Boolean getAutoEmbedJs() {
-        return autoEmbedJs;
-    }
-
-    public void setAutoEmbedJs(Boolean autoEmbedJs) {
-        this.autoEmbedJs = autoEmbedJs;
     }
 
     public String getUglifyjsOptions() {
