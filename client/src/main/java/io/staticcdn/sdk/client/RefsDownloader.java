@@ -105,7 +105,7 @@ public class RefsDownloader {
 
     private boolean needDownloadRefs() {
         return optimizerOptions!=null &&
-                (       Boolean.TRUE.equals(optimizerOptions.isDownloadRefs()) ||
+                (       Boolean.TRUE.equals(optimizerOptions.getDownloadRefs()) ||
                         (optimizerOptions.getCdnBaseUrl()!=null && optimizerOptions.getCdnBaseUrl().indexOf("//")<0)
                 );
     }

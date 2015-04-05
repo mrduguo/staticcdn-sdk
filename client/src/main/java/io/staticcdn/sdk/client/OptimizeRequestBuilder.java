@@ -136,9 +136,12 @@ public class OptimizeRequestBuilder {
     public static InputStream checkForUtf8BOMAndDiscardIfAny(InputStream inputStream) throws IOException {
         PushbackInputStream pushbackInputStream = new PushbackInputStream(new BufferedInputStream(inputStream), 3);
         byte[] bom = new byte[3];
-        if (pushbackInputStream.read(bom) != -1) {
+        int bytesRead = pushbackInputStream.read(bom);
+        if (bytesRead != -1) {
             if (!(bom[0] == (byte) 0xEF && bom[1] == (byte) 0xBB && bom[2] == (byte) 0xBF)) {
-                pushbackInputStream.unread(bom);
+                byte[] dataToCopyBack=new byte[bytesRead];
+                System.arraycopy(bom,0,dataToCopyBack,0,bytesRead);
+                pushbackInputStream.unread(dataToCopyBack);
             }
         }
         return pushbackInputStream;

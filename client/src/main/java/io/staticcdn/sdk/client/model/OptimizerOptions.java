@@ -42,7 +42,7 @@ public class OptimizerOptions {
         this.cdnBaseUrl = cdnBaseUrl;
     }
 
-    public Boolean isDownloadRefs() {
+    public Boolean getDownloadRefs() {
         return downloadRefs;
     }
 
@@ -50,7 +50,7 @@ public class OptimizerOptions {
         this.downloadRefs = downloadRefs;
     }
 
-    public Boolean isAutoEmbedCss() {
+    public Boolean getAutoEmbedCss() {
         return autoEmbedCss;
     }
 
@@ -82,7 +82,7 @@ public class OptimizerOptions {
         this.autoSpriteMaxFileSize = autoSpriteMaxFileSize;
     }
 
-    public Boolean isAutoEmbedJs() {
+    public Boolean getAutoEmbedJs() {
         return autoEmbedJs;
     }
 
