@@ -1,0 +1,66 @@
+{
+  "optimiseScanRules": [
+    {
+      "extensionPattern": "(?i)\\.(css|less)$",
+      "urlPattern": "(?im)(url\\(|@import\\s+(url\\()?)[\\'\"]?([^\\'\" \\);]+)[\\'\" \\);]*",
+      "urlGroupIndex": 3
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<script[^>]*src=[\\s]*[\\'\"]?([^'\" >]+)[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<link[^>]*rel=[\\'\"]?stylesheet[^>]*href=[\\s]*[\\'\"]?([^'\" >]+)[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<link[^>]*href=[\\s]*[\\'\"]?([^'\" >]+)[^>]*rel=[\\'\"]?stylesheet[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(=\\b*[\\'\"])([^\\'\"<>]*url\\()?([^\\'\"<>]*\\?sio-[^\\'\"<>\\)]*)(\\)[^\\'\"<>]*)?([\\'\"])",
+      "urlGroupIndex": 3
+    }
+  ],
+  "version": "latest",
+  "apiServerList": [
+    "http://elb-api-eu-west-1-ivco0359-706708389.eu-west-1.elb.amazonaws.com",
+    "http://elb2-api-us-east-1-ivco0359-425767217.us-east-1.elb.amazonaws.com"
+  ],
+  "optimizeScanRules": [
+    {
+      "extensionPattern": "(?i)\\.(css|less)$",
+      "urlPattern": "(?im)(url\\(|@import\\s+(url\\()?)[\\'\"]?([^\\'\" \\);]+)[\\'\" \\);]*",
+      "urlGroupIndex": 3
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?im)([:,]\\s*url\\(|@import\\s+(url\\()?)[\\'\"]?([^\\'\" \\);]+)[\\'\" \\);]*",
+      "urlGroupIndex": 3
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<script[^>]*src=[\\s]*[\\'\"]?([^'\" >]+)[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<link[^>]*rel=[\\'\"]?stylesheet[^>]*href=[\\s]*[\\'\"]?([^'\" >]+)[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(?i)<link[^>]*href=[\\s]*[\\'\"]?([^'\" >]+)[^>]*rel=[\\'\"]?stylesheet[^>]*>",
+      "urlGroupIndex": 1
+    },
+    {
+      "extensionPattern": "(?i)\\.(html|htm|inc|asp|aspx|cshtml|vbhtml|php|jsp)$",
+      "urlPattern": "(=\\b*[\\'\"])([^\\'\"<>]*url\\()?([^\\'\"<>]*\\?sio-[^\\'\"<>\\)]*)(\\)[^\\'\"<>]*)?([\\'\"])",
+      "urlGroupIndex": 3
+    }
+  ]
+}
